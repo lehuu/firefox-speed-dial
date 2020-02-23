@@ -7,6 +7,9 @@
   "chrome_url_overrides": {
     "newtab": "dist/index.html"
   },
+  "gecko": {
+    "id": "speeddial@bytecruncher.com"
+  },
   "options_ui": {
     "page": "dist/options.html",
     "open_in_tab": true

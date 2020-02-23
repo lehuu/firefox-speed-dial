@@ -16,8 +16,15 @@
     "react-dom": "^16.12.0"
   },
   "scripts": {
-    "start": "parcel ./src/index.html --open --no-cache",
-    "build": "rimraf dist && parcel build ./src/*.html --no-cache --public-url ./"
+    "clean": "rimraf dist",
+    "build:parcel": "parcel build src/*.* --no-cache --public-url . --no-autoinstall",
+    "build:webext": "web-ext build",
+    "watch:parcel": "parcel watch src/*.* --no-autoinstall --public-url . --no-hmr",
+    "watch:webext": "web-ext run",
+    "watch:webext:chrome": "web-ext run -t chromium",
+    "build": "run-s clean build:parcel build:webext",
+    "develop": "npm-run-all clean build:parcel -plr watch:parcel watch:webext",
+    "develop:chrome": "npm-run-all clean build:parcel -plr watch:parcel watch:webext:chrome"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",
@@ -26,7 +33,9 @@
     "@babel/preset-env": "^7.7.7",
     "babel-plugin-emotion": "^10.0.27",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
+    "npm-run-all": "^4.1.5",
     "parcel-bundler": "^1.12.4",
+    "parcel-plugin-web-extension": "^1.6.1",
     "rimraf": "^3.0.0"
   },
   "browserslist": [
