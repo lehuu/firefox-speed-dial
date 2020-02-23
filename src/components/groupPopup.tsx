@@ -30,10 +30,12 @@ const GroupPopUp: React.SFC<GroupPopUp> = ({
     error: mutationError
   } = useGroupMutation();
 
-  if (!isLoading && called && !mutationError) {
-    onSave();
-    onClose();
-  }
+  React.useEffect(() => {
+    if (!isLoading && called && !mutationError) {
+      onClose();
+      onSave();
+    }
+  }, [isLoading, called, mutationError]);
 
   const handleDelete = group ? () => {} : null;
   const handleSave = (data: FormData) => {
