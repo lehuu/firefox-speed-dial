@@ -1,7 +1,7 @@
 import * as React from "react";
 
-interface Group {
-  id: number;
+export interface Group {
+  id: string;
   title: string;
   position: number;
 }
@@ -45,7 +45,8 @@ const useGroups = () => {
     isLoading: true
   });
 
-  React.useEffect(() => {
+  const refetch = () => {
+    dispatch({ type: "Load" });
     const promise = browser.storage.sync.get({ groups: [] });
     promise
       .then(res => {
@@ -54,9 +55,13 @@ const useGroups = () => {
       .catch(err => {
         dispatch({ type: "Error", payload: err as Error });
       });
+  };
+
+  React.useEffect(() => {
+    refetch();
   }, []);
 
-  return { groups, isLoading, error };
+  return { groups, isLoading, error, refetch };
 };
 
 export default useGroups;
