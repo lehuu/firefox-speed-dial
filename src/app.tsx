@@ -1,8 +1,9 @@
-import React from "react";
-import { render } from "react-dom";
+import * as React from "react";
 
-const App = () => {
+const App: React.SFC<any> = () => {
   const groups = browser.storage.sync.get("groups");
+  const dials = browser.storage.sync.get("dials");
+
   groups.then(res => {
     console.log(res);
   });
@@ -14,4 +15,4 @@ const App = () => {
   );
 };
 
-render(<App />, document.querySelector("#app"));
+export default App;
