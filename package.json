@@ -17,14 +17,12 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "build:parcel": "parcel build src/*.* --no-cache --public-url . --no-autoinstall",
+    "build:parcel": "parcel build src/*.html --no-cache --public-url . --no-autoinstall",
     "build:webext": "web-ext build",
     "watch:parcel": "parcel watch src/*.* --no-autoinstall --public-url . --no-hmr",
     "watch:webext": "web-ext run",
-    "watch:webext:chrome": "web-ext run -t chromium",
     "build": "run-s clean build:parcel build:webext",
-    "develop": "npm-run-all clean build:parcel -plr watch:parcel watch:webext",
-    "develop:chrome": "npm-run-all clean build:parcel -plr watch:parcel watch:webext:chrome"
+    "develop": "npm-run-all clean build:parcel -plr watch:parcel watch:webext"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",

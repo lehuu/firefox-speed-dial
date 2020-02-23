@@ -1,8 +1,8 @@
 import "./options.css";
 
 function init() {
-  let urlDiv = document.querySelector("#homepage-url");
-  let homeURL = browser.runtime.getURL("dist/index.html");
+  const urlDiv = document.querySelector("#homepage-url");
+  const homeURL = browser.runtime.getURL("dist/index.html");
   urlDiv.innerHTML = `<a href="${homeURL}">${homeURL}</a>`;
 }
 

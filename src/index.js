@@ -6,7 +6,6 @@ const App = () => {
   groups.then(res => {
     console.log(res)
   })
-  console.log('loaded')
 
   return <div><button>+</button></div>
 }
