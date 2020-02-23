@@ -1,0 +1,35 @@
+{
+  "name": "speed-dial-firefox",
+  "author": {
+    "name": "Phuoc Le"
+  },
+  "verion": "1.0.0",
+  "description": "An extension to get the Opera Speed Dial to Firefox",
+  "keywords": [
+    "firefox",
+    "speed dial",
+    "toolbar dial"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "scripts": {
+    "start": "parcel ./src/index.html --open --no-cache",
+    "build": "rimraf dist && parcel build ./src/*.html --no-cache --public-url ./"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-transform-react-jsx": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "babel-plugin-emotion": "^10.0.27",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
+    "parcel-bundler": "^1.12.4",
+    "rimraf": "^3.0.0"
+  },
+  "browserslist": [
+    "last 2 Firefox versions"
+  ]
+}
