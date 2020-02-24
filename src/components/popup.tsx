@@ -66,14 +66,6 @@ export const DialogActions = withStyles((theme: Theme) => ({
   }
 }))(MuiDialogActions);
 
-export const ErrorMessage = withStyles((theme: Theme) => ({
-  root: {
-    color: red[600],
-    position: "absolute",
-    left: theme.spacing(1)
-  }
-}))(Typography);
-
 export const RedButton = withStyles({
   root: {
     color: red[600],

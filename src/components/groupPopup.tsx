@@ -2,7 +2,6 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import PopUp, {
   PopUpProps,
-  ErrorMessage,
   RedButton,
   DialogContent,
   DialogActions
@@ -11,6 +10,7 @@ import { Group } from "../hooks/useGroups";
 import TextField from "@material-ui/core/TextField";
 import useGroupMutation from "../hooks/useGroupMutation";
 import { Button } from "@material-ui/core";
+import { useSnackbar } from "notistack";
 
 type FormData = {
   title: string;
@@ -36,13 +36,24 @@ const GroupPopUp: React.SFC<GroupPopUpProps> = ({
     called,
     error: mutationError
   } = useGroupMutation();
+  const { enqueueSnackbar } = useSnackbar();
 
   React.useEffect(() => {
     if (!isLoading && called && !mutationError) {
+      enqueueSnackbar("Group saved", { variant: "success" });
       onClose();
       onSave();
     }
   }, [isLoading, called, mutationError]);
+
+  React.useEffect(() => {
+    if (!mutationError) {
+      return;
+    }
+    enqueueSnackbar(`Error saving group: ${mutationError.name}`, {
+      variant: "error"
+    });
+  }, [mutationError]);
 
   const handleDelete = group ? () => {} : null;
   const handleSave = (data: FormData) => {
@@ -73,11 +84,8 @@ const GroupPopUp: React.SFC<GroupPopUpProps> = ({
           />
         </DialogContent>
         <DialogActions>
-          {mutationError?.name && (
-            <ErrorMessage>{mutationError?.name}</ErrorMessage>
-          )}
           {group && <RedButton onClick={handleDelete}>Delete</RedButton>}
-          <Button type="submit" color="primary">
+          <Button disabled={isLoading} type="submit" color="primary">
             Save
           </Button>
         </DialogActions>

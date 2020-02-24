@@ -4,14 +4,17 @@ import theme from "../theme";
 import { CssBaseline } from "@material-ui/core";
 import { ContextMenuProvider } from "./ContextMenuProvider";
 import Content from "./content";
+import { SnackbarProvider } from "notistack";
 
 const App: React.SFC<any> = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <ContextMenuProvider>
-        <Content />
-      </ContextMenuProvider>
+      <SnackbarProvider maxSnack={4}>
+        <ContextMenuProvider>
+          <Content />
+        </ContextMenuProvider>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 };
