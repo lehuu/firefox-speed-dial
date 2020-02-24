@@ -1,20 +1,27 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
-import PopUp, { PopUpProps } from "./popup";
+import PopUp, {
+  PopUpProps,
+  ErrorMessage,
+  RedButton,
+  DialogContent,
+  DialogActions
+} from "./popup";
 import { Group } from "../hooks/useGroups";
 import TextField from "@material-ui/core/TextField";
 import useGroupMutation from "../hooks/useGroupMutation";
+import { Button } from "@material-ui/core";
 
 type FormData = {
   title: string;
 };
 
-interface GroupPopUp extends Omit<PopUpProps, "children"> {
+interface GroupPopUpProps extends Omit<PopUpProps, "children"> {
   group?: Group;
   onSave: () => void;
 }
 
-const GroupPopUp: React.SFC<GroupPopUp> = ({
+const GroupPopUp: React.SFC<GroupPopUpProps> = ({
   heading,
   onClose,
   onSave,
@@ -47,29 +54,33 @@ const GroupPopUp: React.SFC<GroupPopUp> = ({
   };
 
   return (
-    <PopUp
-      heading={heading}
-      onClose={onClose}
-      open={open}
-      onDelete={handleDelete}
-      onSave={handleSubmit(handleSave)}
-      error={mutationError?.name}
-    >
+    <PopUp heading={heading} onClose={onClose} open={open}>
       <form autoComplete="off" onSubmit={handleSubmit(handleSave)}>
-        <TextField
-          autoFocus
-          fullWidth
-          error={!!errors.title}
-          helperText={errors.title && errors.title.message}
-          name="title"
-          inputRef={register({
-            required: "Title is required"
-          })}
-          defaultValue={group?.title || ""}
-          id="standard-basic"
-          variant="outlined"
-          label="Title"
-        />
+        <DialogContent>
+          <TextField
+            autoFocus
+            fullWidth
+            error={!!errors.title}
+            helperText={errors.title && errors.title.message}
+            name="title"
+            inputRef={register({
+              required: "Title is required"
+            })}
+            defaultValue={group?.title || ""}
+            id="standard-basic"
+            variant="outlined"
+            label="Title"
+          />
+        </DialogContent>
+        <DialogActions>
+          {mutationError?.name && (
+            <ErrorMessage>{mutationError?.name}</ErrorMessage>
+          )}
+          {group && <RedButton onClick={handleDelete}>Delete</RedButton>}
+          <Button type="submit" color="primary">
+            Save
+          </Button>
+        </DialogActions>
       </form>
     </PopUp>
   );

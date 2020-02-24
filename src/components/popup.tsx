@@ -53,20 +53,20 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
   );
 });
 
-const DialogContent = withStyles((theme: Theme) => ({
+export const DialogContent = withStyles((theme: Theme) => ({
   root: {
     padding: theme.spacing(2)
   }
-}))(MuiDialogContent);
+}))(props => <MuiDialogContent dividers {...props} />);
 
-const DialogActions = withStyles((theme: Theme) => ({
+export const DialogActions = withStyles((theme: Theme) => ({
   root: {
     margin: 0,
     padding: theme.spacing(1)
   }
 }))(MuiDialogActions);
 
-const ErrorMessage = withStyles((theme: Theme) => ({
+export const ErrorMessage = withStyles((theme: Theme) => ({
   root: {
     color: red[600],
     position: "absolute",
@@ -74,7 +74,7 @@ const ErrorMessage = withStyles((theme: Theme) => ({
   }
 }))(Typography);
 
-const DeleteButton = withStyles({
+export const RedButton = withStyles({
   root: {
     color: red[600],
     "&:hover": { color: red[800] }
@@ -84,22 +84,11 @@ const DeleteButton = withStyles({
 export interface PopUpProps {
   heading: string;
   open: boolean;
-  error?: string;
   onClose: () => void;
-  onDelete?: () => void;
-  onSave?: () => void;
   children?: any;
 }
 
-const PopUp: React.SFC<PopUpProps> = ({
-  heading,
-  children,
-  open,
-  onClose,
-  onSave,
-  onDelete,
-  error
-}) => {
+const PopUp: React.SFC<PopUpProps> = ({ heading, children, open, onClose }) => {
   return (
     <Dialog
       fullWidth={true}
@@ -110,21 +99,7 @@ const PopUp: React.SFC<PopUpProps> = ({
       <DialogTitle id="customized-dialog-title" onClose={onClose}>
         {heading}
       </DialogTitle>
-      <DialogContent dividers>{children}</DialogContent>
-      <DialogActions>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-        {onDelete && (
-          <DeleteButton onClick={onDelete} color="primary">
-            Delete
-          </DeleteButton>
-        )}
-
-        {onSave && (
-          <Button onClick={onSave} color="primary">
-            Save
-          </Button>
-        )}
-      </DialogActions>
+      {children}
     </Dialog>
   );
 };

@@ -5,6 +5,13 @@ import { AppBar, Tabs, IconButton, withStyles, Tab } from "@material-ui/core";
 import AddCircle from "@material-ui/icons/AddCircle";
 import useContextMenu from "../hooks/useContextMenu";
 import ContextMenu from "./ContextMenu";
+import ConfirmPopup from "./confirmPopup";
+
+enum ContentModalType {
+  None = 0,
+  Edit = 1,
+  Delete = 2
+}
 
 const FlexAppBar = withStyles({
   root: {
@@ -23,9 +30,9 @@ const CreateGroupButton = withStyles({
 const Content: React.SFC<any> = () => {
   const { groups, isLoading, error, refetch } = useGroups();
   const [modalState, setModalState] = React.useState<{
-    isModalVisible: boolean;
+    modalType: ContentModalType;
     selectedGroup?: Group;
-  }>({ isModalVisible: false });
+  }>({ modalType: ContentModalType.None });
   const { show, hide } = useContextMenu();
 
   React.useMemo(() => {
@@ -45,12 +52,12 @@ const Content: React.SFC<any> = () => {
   // if (isLoading) {
   //   return <div>Loading</div>;
   // }
-  const handleShowModal = () => {
-    setModalState({ isModalVisible: true });
+  const handleShowEditModal = () => {
+    setModalState({ modalType: ContentModalType.Edit });
   };
 
   const handleCloseModal = () => {
-    setModalState(prev => ({ ...prev, isModalVisible: false }));
+    setModalState(prev => ({ ...prev, modalType: ContentModalType.None }));
   };
 
   const handleSave = () => {
@@ -58,11 +65,12 @@ const Content: React.SFC<any> = () => {
   };
 
   const handleEdit = (group: Group) => {
-    setModalState({ selectedGroup: group, isModalVisible: true });
+    setModalState({ selectedGroup: group, modalType: ContentModalType.Edit });
     hide();
   };
 
   const handleDelete = (group: Group) => {
+    setModalState({ selectedGroup: group, modalType: ContentModalType.Delete });
     hide();
   };
 
@@ -100,16 +108,23 @@ const Content: React.SFC<any> = () => {
             ></Tab>
           ))}
         </Tabs>
-        <CreateGroupButton onClick={handleShowModal} color="primary">
+        <CreateGroupButton onClick={handleShowEditModal} color="primary">
           <AddCircle fontSize="default" />
         </CreateGroupButton>
       </FlexAppBar>
-
+      <ConfirmPopup
+        onDeny={handleCloseModal}
+        onClose={handleCloseModal}
+        onConfirm={handleCloseModal}
+        open={modalState.modalType === ContentModalType.Delete}
+        heading={"Warning"}
+        body={`Are you sure you want to delete ${modalState.selectedGroup?.title}?`}
+      />
       <GroupPopUp
         onSave={handleSave}
         heading={modalState.selectedGroup ? "Edit group" : "Create new group"}
         group={modalState.selectedGroup}
-        open={modalState.isModalVisible}
+        open={modalState.modalType === ContentModalType.Edit}
         onClose={handleCloseModal}
       />
     </>
