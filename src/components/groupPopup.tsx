@@ -39,7 +39,11 @@ const GroupPopUp: React.SFC<GroupPopUp> = ({
 
   const handleDelete = group ? () => {} : null;
   const handleSave = (data: FormData) => {
-    createGroup(data.title);
+    if (!group) {
+      createGroup(data.title);
+    } else {
+      updateGroup({ ...group, title: data.title });
+    }
   };
 
   return (
@@ -51,8 +55,9 @@ const GroupPopUp: React.SFC<GroupPopUp> = ({
       onSave={handleSubmit(handleSave)}
       error={mutationError?.name}
     >
-      <form autoComplete="off">
+      <form autoComplete="off" onSubmit={handleSubmit(handleSave)}>
         <TextField
+          autoFocus
           fullWidth
           error={!!errors.title}
           helperText={errors.title && errors.title.message}

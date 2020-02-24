@@ -16,13 +16,19 @@ const useGroupMutation = () => {
 
   const updateGroup = (group: Group) => {
     const promise = browser.storage.sync.get({ groups: [] });
-    return promise.then(res => {
-      const groups = res.groups as Group[];
-      const filteredGroup = groups.filter(el => el.id != group.id);
-      filteredGroup.push(group);
-      filteredGroup.sort((a, b) => a.position - b.position);
-      return browser.storage.sync.set({ groups: filteredGroup });
-    });
+    setState({ isLoading: true, called: true });
+    return promise
+      .then(res => {
+        const groups = res.groups as Group[];
+        const filteredGroup = groups.filter(el => el.id != group.id);
+        filteredGroup.push(group);
+        filteredGroup.sort((a, b) => a.position - b.position);
+        return browser.storage.sync.set({ groups: filteredGroup });
+      })
+      .then(() => {
+        setState({ isLoading: false, called: true });
+      })
+      .catch(err => setState({ isLoading: false, called: true, error: err }));
   };
 
   const createGroup = (title: string) => {
