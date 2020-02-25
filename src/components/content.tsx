@@ -1,15 +1,17 @@
 import * as React from "react";
-import useGroups, { Group } from "../hooks/useGroups";
+import useGroups from "../hooks/useGroups";
 import GroupPopUp from "./groupPopup";
-import { AppBar, Tabs, IconButton, withStyles, Tab } from "@material-ui/core";
+import { AppBar, IconButton, withStyles } from "@material-ui/core";
 import AddCircle from "@material-ui/icons/AddCircle";
 import useContextMenu from "../hooks/useContextMenu";
 import ContextMenu from "./ContextMenu";
 import ConfirmPopup from "./confirmPopup";
-import useGroupMutation from "../hooks/useGroupMutation";
 import { useSnackbar } from "notistack";
 import { SortableTabs, SortableTab } from "./SortableTabBar";
 import { arrayMove } from "react-sortable-hoc";
+import deleteGroup from "../mutations/deleteGroup";
+import updateGroupPositions from "../mutations/updateGroupPositions";
+import { Group } from "../types";
 
 enum ContentModalType {
   None = 0,
@@ -39,10 +41,11 @@ const Content: React.SFC<any> = () => {
   }>({ modalType: ContentModalType.None });
   const { show, hide } = useContextMenu();
   const { enqueueSnackbar } = useSnackbar();
-  const { deleteGroup, updateGroupPositions } = useGroupMutation();
+  const [cachedGroups, setCachedGroups] = React.useState(groups);
 
   React.useMemo(() => {
     groups.sort((a, b) => a.position - b.position);
+    setCachedGroups(groups);
   }, [groups]);
 
   const [selectedTab, setSelectedTab] = React.useState(0);
@@ -55,9 +58,6 @@ const Content: React.SFC<any> = () => {
     return <div>Error loading groups</div>;
   }
 
-  // if (isLoading) {
-  //   return <div>Loading</div>;
-  // }
   const handleShowEditModal = () => {
     setModalState({ modalType: ContentModalType.Edit });
   };
@@ -81,9 +81,11 @@ const Content: React.SFC<any> = () => {
 
   const handleDeleteConfirm = async (group: Group) => {
     const result = await deleteGroup(group);
-    console.log(result);
-    // enqueueSnackbar("Error deleting group", { variant: "error" });
 
+    if (result.error) {
+      enqueueSnackbar("Error deleting group", { variant: "error" });
+      return;
+    }
     enqueueSnackbar("Group deleted", { variant: "success" });
     refetch();
     handleCloseModal();
@@ -103,13 +105,19 @@ const Content: React.SFC<any> = () => {
     );
   };
 
-  const handleSortEnd = ({ oldIndex, newIndex }) => {
+  const handleSortEnd = async ({ oldIndex, newIndex }) => {
     const sortedGroups = arrayMove<Group>(
-      groups,
+      cachedGroups,
       oldIndex,
       newIndex
     ).map((el, i) => ({ ...el, position: i }));
-    updateGroupPositions(sortedGroups);
+    setCachedGroups(sortedGroups);
+
+    const result = await updateGroupPositions(sortedGroups);
+    if (result.error) {
+      enqueueSnackbar("Error", { variant: "error" });
+      return;
+    }
   };
 
   return (
@@ -123,7 +131,7 @@ const Content: React.SFC<any> = () => {
           lockAxis="x"
           axis="x"
         >
-          {groups.map((group, index) => {
+          {cachedGroups.map((group, index) => {
             return (
               <SortableTab
                 key={group.id}

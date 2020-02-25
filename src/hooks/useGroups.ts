@@ -1,10 +1,5 @@
 import * as React from "react";
-
-export interface Group {
-  id: string;
-  title: string;
-  position: number;
-}
+import { Group } from "../types";
 
 interface State {
   groups: Group[];
@@ -48,7 +43,7 @@ const useGroups = () => {
   const refetch = () => {
     dispatch({ type: "Load" });
     const promise = browser.storage.sync.get({ groups: [] });
-    promise
+    return promise
       .then(res => {
         dispatch({ type: "Done", payload: res.groups as Group[] });
       })

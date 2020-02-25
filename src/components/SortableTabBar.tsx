@@ -6,6 +6,7 @@ export const SortableTab = SortableElement(
   ({ tempIndex, label, onChange, onContextMenu }) => {
     return (
       <Tab
+        style={{ zIndex: 1200 }}
         onChange={onChange}
         value={tempIndex}
         label={label}

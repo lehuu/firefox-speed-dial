@@ -6,11 +6,13 @@ import PopUp, {
   DialogContent,
   DialogActions
 } from "./popup";
-import { Group } from "../hooks/useGroups";
 import TextField from "@material-ui/core/TextField";
-import useGroupMutation from "../hooks/useGroupMutation";
 import { Button } from "@material-ui/core";
 import { useSnackbar } from "notistack";
+import { Group } from "../types";
+import createGroup from "../mutations/createGroup";
+import updateGroup from "../mutations/updateGroup";
+import deleteGroup from "../mutations/deleteGroup";
 
 type FormData = {
   title: string;
@@ -29,38 +31,34 @@ const GroupPopUp: React.SFC<GroupPopUpProps> = ({
   group
 }) => {
   const { register, handleSubmit, errors } = useForm<FormData>();
-  const {
-    updateGroup,
-    createGroup,
-    isLoading,
-    called,
-    error: mutationError
-  } = useGroupMutation();
   const { enqueueSnackbar } = useSnackbar();
 
-  React.useEffect(() => {
-    if (!isLoading && called && !mutationError) {
+  const handleDelete = async () => {
+    if (!group) {
+      return;
+    }
+    const result = await deleteGroup(group);
+    if (result.error) {
+      enqueueSnackbar(`Error deleting group: ${result.error.name}`, {
+        variant: "error"
+      });
+      return;
+    }
+    onClose();
+    onSave();
+  };
+  const handleSave = async (data: FormData) => {
+    const result = !group
+      ? await createGroup(data.title)
+      : await updateGroup({ ...group, title: data.title });
+    if (result.error) {
+      enqueueSnackbar(`Error saving group: ${result.error.name}`, {
+        variant: "error"
+      });
+    } else {
       enqueueSnackbar("Group saved", { variant: "success" });
       onClose();
       onSave();
-    }
-  }, [isLoading, called, mutationError]);
-
-  React.useEffect(() => {
-    if (!mutationError) {
-      return;
-    }
-    enqueueSnackbar(`Error saving group: ${mutationError.name}`, {
-      variant: "error"
-    });
-  }, [mutationError]);
-
-  const handleDelete = group ? () => {} : null;
-  const handleSave = (data: FormData) => {
-    if (!group) {
-      createGroup(data.title);
-    } else {
-      updateGroup({ ...group, title: data.title });
     }
   };
 
@@ -85,7 +83,7 @@ const GroupPopUp: React.SFC<GroupPopUpProps> = ({
         </DialogContent>
         <DialogActions>
           {group && <RedButton onClick={handleDelete}>Delete</RedButton>}
-          <Button disabled={isLoading} type="submit" color="primary">
+          <Button type="submit" color="primary">
             Save
           </Button>
         </DialogActions>
