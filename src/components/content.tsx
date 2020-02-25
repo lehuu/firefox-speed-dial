@@ -6,6 +6,8 @@ import AddCircle from "@material-ui/icons/AddCircle";
 import useContextMenu from "../hooks/useContextMenu";
 import ContextMenu from "./ContextMenu";
 import ConfirmPopup from "./confirmPopup";
+import useGroupMutation from "../hooks/useGroupMutation";
+import { useSnackbar } from "notistack";
 
 enum ContentModalType {
   None = 0,
@@ -34,10 +36,29 @@ const Content: React.SFC<any> = () => {
     selectedGroup?: Group;
   }>({ modalType: ContentModalType.None });
   const { show, hide } = useContextMenu();
+  const { enqueueSnackbar } = useSnackbar();
+  const {
+    deleteGroup,
+    isLoading: mutationLoading,
+    error: mutationError,
+    called
+  } = useGroupMutation();
 
   React.useMemo(() => {
     groups.sort((a, b) => a.position - b.position);
   }, [groups]);
+
+  React.useEffect(() => {
+    if (mutationLoading || !called) {
+      return;
+    }
+    if (mutationError) {
+      enqueueSnackbar("Error deleting group", { variant: "error" });
+    } else {
+      enqueueSnackbar("Group deleted", { variant: "success" });
+      refetch();
+    }
+  }, [mutationError, mutationLoading, called]);
 
   const [selectedTab, setSelectedTab] = React.useState(0);
 
@@ -60,10 +81,6 @@ const Content: React.SFC<any> = () => {
     setModalState(prev => ({ ...prev, modalType: ContentModalType.None }));
   };
 
-  const handleSave = () => {
-    refetch();
-  };
-
   const handleEdit = (group: Group) => {
     setModalState({ selectedGroup: group, modalType: ContentModalType.Edit });
     hide();
@@ -72,6 +89,11 @@ const Content: React.SFC<any> = () => {
   const handleDelete = (group: Group) => {
     setModalState({ selectedGroup: group, modalType: ContentModalType.Delete });
     hide();
+  };
+
+  const handleDeleteConfirm = (group: Group) => {
+    deleteGroup(group);
+    handleCloseModal();
   };
 
   const handleRightClick = (
@@ -115,13 +137,13 @@ const Content: React.SFC<any> = () => {
       <ConfirmPopup
         onDeny={handleCloseModal}
         onClose={handleCloseModal}
-        onConfirm={handleCloseModal}
+        onConfirm={() => handleDeleteConfirm(modalState.selectedGroup)}
         open={modalState.modalType === ContentModalType.Delete}
         heading={"Warning"}
         body={`Are you sure you want to delete ${modalState.selectedGroup?.title}?`}
       />
       <GroupPopUp
-        onSave={handleSave}
+        onSave={refetch}
         heading={modalState.selectedGroup ? "Edit group" : "Create new group"}
         group={modalState.selectedGroup}
         open={modalState.modalType === ContentModalType.Edit}
