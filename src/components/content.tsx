@@ -42,13 +42,12 @@ const Content: React.SFC<any> = () => {
   const { show, hide } = useContextMenu();
   const { enqueueSnackbar } = useSnackbar();
   const [cachedGroups, setCachedGroups] = React.useState(groups);
+  const [selectedTab, setSelectedTab] = React.useState(0);
 
   React.useMemo(() => {
     groups.sort((a, b) => a.position - b.position);
     setCachedGroups(groups);
   }, [groups]);
-
-  const [selectedTab, setSelectedTab] = React.useState(0);
 
   const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
     setSelectedTab(newValue);
@@ -124,7 +123,7 @@ const Content: React.SFC<any> = () => {
     <>
       <FlexAppBar position="static" color="default">
         <SortableTabs
-          value={selectedTab}
+          value={Math.min(selectedTab, cachedGroups.length - 1)}
           onChange={handleChange}
           distance={10}
           onSortEnd={handleSortEnd}

@@ -1,6 +1,12 @@
 import * as React from "react";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import { Tabs, Tab } from "@material-ui/core";
+import { Tabs, Tab, withStyles } from "@material-ui/core";
+
+const FullTabBar = withStyles({
+  root: {
+    width: "100%"
+  }
+})(Tabs);
 
 export const SortableTab = SortableElement(
   ({ tempIndex, label, onChange, onContextMenu }) => {
@@ -19,7 +25,7 @@ export const SortableTab = SortableElement(
 export const SortableTabs = SortableContainer(
   ({ value, onChange, children }) => {
     return (
-      <Tabs
+      <FullTabBar
         value={value}
         onChange={onChange}
         indicatorColor="primary"
@@ -29,7 +35,7 @@ export const SortableTabs = SortableContainer(
         aria-label="scrollable auto tabs"
       >
         {children}
-      </Tabs>
+      </FullTabBar>
     );
   }
 );
