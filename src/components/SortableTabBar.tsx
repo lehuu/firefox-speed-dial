@@ -23,9 +23,10 @@ export const SortableTab = SortableElement(
 );
 
 export const SortableTabs = SortableContainer(
-  ({ value, onChange, children }) => {
+  ({ value, onChange, children, ...rest }) => {
     return (
       <FullTabBar
+        {...rest}
         value={value}
         onChange={onChange}
         indicatorColor="primary"

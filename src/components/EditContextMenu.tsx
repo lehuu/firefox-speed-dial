@@ -20,12 +20,15 @@ const StyledMenuItem = withStyles(theme => ({
   }
 }))(MenuItem);
 
-interface ContextMenuProps {
+interface EditContextMenuProps {
   onEdit: () => void;
   onDelete: () => void;
 }
 
-const ContextMenu: React.SFC<ContextMenuProps> = ({ onEdit, onDelete }) => {
+const EditContextMenu: React.SFC<EditContextMenuProps> = ({
+  onEdit,
+  onDelete
+}) => {
   return (
     <Paper>
       <StyledMenuItem onClick={onEdit}>
@@ -44,4 +47,4 @@ const ContextMenu: React.SFC<ContextMenuProps> = ({ onEdit, onDelete }) => {
   );
 };
 
-export default ContextMenu;
+export default EditContextMenu;

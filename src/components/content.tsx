@@ -4,7 +4,8 @@ import GroupPopUp from "./groupPopup";
 import { AppBar, IconButton, withStyles } from "@material-ui/core";
 import AddCircle from "@material-ui/icons/AddCircle";
 import useContextMenu from "../hooks/useContextMenu";
-import ContextMenu from "./ContextMenu";
+import EditContextMenu from "./EditContextMenu";
+import NewContextMenu from "./NewContextMenu";
 import ConfirmPopup from "./confirmPopup";
 import { useSnackbar } from "notistack";
 import { SortableTabs, SortableTab } from "./SortableTabBar";
@@ -57,17 +58,13 @@ const Content: React.SFC<any> = () => {
     return <div>Error loading groups</div>;
   }
 
-  const handleShowEditModal = () => {
-    setModalState({ modalType: ContentModalType.Edit });
+  const handleShowEditModal = (group?: Group) => {
+    setModalState({ selectedGroup: group, modalType: ContentModalType.Edit });
+    hide();
   };
 
   const handleCloseModal = () => {
     setModalState(prev => ({ ...prev, modalType: ContentModalType.None }));
-  };
-
-  const handleEdit = (group: Group) => {
-    setModalState({ selectedGroup: group, modalType: ContentModalType.Edit });
-    hide();
   };
 
   const handleDelete = (group: Group) => {
@@ -92,15 +89,20 @@ const Content: React.SFC<any> = () => {
 
   const handleRightClick = (
     event: React.MouseEvent<HTMLElement>,
-    group: Group
+    group?: Group
   ) => {
     event.preventDefault();
+    event.stopPropagation();
     show(
       { x: event.clientX, y: event.clientY },
-      <ContextMenu
-        onEdit={() => handleEdit(group)}
-        onDelete={() => handleDelete(group)}
-      />
+      group ? (
+        <EditContextMenu
+          onEdit={() => handleShowEditModal(group)}
+          onDelete={() => handleDelete(group)}
+        />
+      ) : (
+        <NewContextMenu text="New group" onNew={handleShowEditModal} />
+      )
     );
   };
 
@@ -123,6 +125,7 @@ const Content: React.SFC<any> = () => {
     <>
       <FlexAppBar position="static" color="default">
         <SortableTabs
+          onContextMenu={e => handleRightClick(e)}
           value={Math.min(selectedTab, cachedGroups.length - 1)}
           onChange={handleChange}
           distance={10}
@@ -143,7 +146,10 @@ const Content: React.SFC<any> = () => {
           })}
         </SortableTabs>
 
-        <CreateGroupButton onClick={handleShowEditModal} color="primary">
+        <CreateGroupButton
+          onClick={() => handleShowEditModal()}
+          color="primary"
+        >
           <AddCircle fontSize="default" />
         </CreateGroupButton>
       </FlexAppBar>
