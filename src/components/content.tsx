@@ -8,6 +8,8 @@ import ContextMenu from "./ContextMenu";
 import ConfirmPopup from "./confirmPopup";
 import useGroupMutation from "../hooks/useGroupMutation";
 import { useSnackbar } from "notistack";
+import { SortableTabs, SortableTab } from "./SortableTabBar";
+import { arrayMove } from "react-sortable-hoc";
 
 enum ContentModalType {
   None = 0,
@@ -37,28 +39,11 @@ const Content: React.SFC<any> = () => {
   }>({ modalType: ContentModalType.None });
   const { show, hide } = useContextMenu();
   const { enqueueSnackbar } = useSnackbar();
-  const {
-    deleteGroup,
-    isLoading: mutationLoading,
-    error: mutationError,
-    called
-  } = useGroupMutation();
+  const { deleteGroup, updateGroupPositions } = useGroupMutation();
 
   React.useMemo(() => {
     groups.sort((a, b) => a.position - b.position);
   }, [groups]);
-
-  React.useEffect(() => {
-    if (mutationLoading || !called) {
-      return;
-    }
-    if (mutationError) {
-      enqueueSnackbar("Error deleting group", { variant: "error" });
-    } else {
-      enqueueSnackbar("Group deleted", { variant: "success" });
-      refetch();
-    }
-  }, [mutationError, mutationLoading, called]);
 
   const [selectedTab, setSelectedTab] = React.useState(0);
 
@@ -87,12 +72,20 @@ const Content: React.SFC<any> = () => {
   };
 
   const handleDelete = (group: Group) => {
-    setModalState({ selectedGroup: group, modalType: ContentModalType.Delete });
+    setModalState({
+      selectedGroup: group,
+      modalType: ContentModalType.Delete
+    });
     hide();
   };
 
-  const handleDeleteConfirm = (group: Group) => {
-    deleteGroup(group);
+  const handleDeleteConfirm = async (group: Group) => {
+    const result = await deleteGroup(group);
+    console.log(result);
+    // enqueueSnackbar("Error deleting group", { variant: "error" });
+
+    enqueueSnackbar("Group deleted", { variant: "success" });
+    refetch();
     handleCloseModal();
   };
 
@@ -110,26 +103,39 @@ const Content: React.SFC<any> = () => {
     );
   };
 
+  const handleSortEnd = ({ oldIndex, newIndex }) => {
+    const sortedGroups = arrayMove<Group>(
+      groups,
+      oldIndex,
+      newIndex
+    ).map((el, i) => ({ ...el, position: i }));
+    updateGroupPositions(sortedGroups);
+  };
+
   return (
     <>
       <FlexAppBar position="static" color="default">
-        <Tabs
+        <SortableTabs
           value={selectedTab}
           onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="scrollable"
-          scrollButtons="auto"
-          aria-label="scrollable auto tabs"
+          distance={10}
+          onSortEnd={handleSortEnd}
+          lockAxis="x"
+          axis="x"
         >
-          {groups.map(group => (
-            <Tab
-              onContextMenu={e => handleRightClick(e, group)}
-              key={group.id}
-              label={group.title}
-            ></Tab>
-          ))}
-        </Tabs>
+          {groups.map((group, index) => {
+            return (
+              <SortableTab
+                key={group.id}
+                index={index}
+                tempIndex={index}
+                label={group.title}
+                onContextMenu={e => handleRightClick(e, group)}
+              />
+            );
+          })}
+        </SortableTabs>
+
         <CreateGroupButton onClick={handleShowEditModal} color="primary">
           <AddCircle fontSize="default" />
         </CreateGroupButton>

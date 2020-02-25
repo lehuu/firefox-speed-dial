@@ -31,10 +31,20 @@ const useGroupMutation = () => {
       .catch(err => setState({ isLoading: false, called: true, error: err }));
   };
 
+  const updateGroupPositions = (groups: Group[]) => {
+    const promise = browser.storage.sync.set({ groups: groups });
+    setState({ isLoading: true, called: true });
+    return promise
+      .then(() => {
+        setState({ isLoading: false, called: true });
+      })
+      .catch(err => setState({ isLoading: false, called: true, error: err }));
+  };
+
   const createGroup = (title: string) => {
     const promise = browser.storage.sync.get({ groups: [] });
     setState({ isLoading: true, called: true });
-    promise
+    return promise
       .then(res => {
         const groups = res.groups as Group[];
         const newGroup: Group = { id: uuid(), title, position: groups.length };
@@ -59,15 +69,28 @@ const useGroupMutation = () => {
           ...el,
           position: index
         }));
-        return browser.storage.sync.set({ groups: result });
+        return Promise.all([
+          browser.storage.sync.set({ groups: result }),
+          result
+        ]);
       })
-      .then(() => {
+      .then(([, res]) => {
         setState({ isLoading: false, called: true });
+        return { data: res, error: null };
       })
-      .catch(err => setState({ isLoading: false, called: true, error: err }));
+      .catch(err => {
+        setState({ isLoading: false, called: true, error: err });
+        return { data: null, error: err };
+      });
   };
 
-  return { ...state, updateGroup, createGroup, deleteGroup };
+  return {
+    ...state,
+    updateGroup,
+    createGroup,
+    deleteGroup,
+    updateGroupPositions
+  };
 };
 
 export default useGroupMutation;
