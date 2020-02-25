@@ -78,15 +78,23 @@ export interface PopUpProps {
   open: boolean;
   onClose: () => void;
   children?: any;
+  onKeyEnter?: () => void;
 }
 
-const PopUp: React.SFC<PopUpProps> = ({ heading, children, open, onClose }) => {
+const PopUp: React.SFC<PopUpProps> = ({
+  heading,
+  children,
+  open,
+  onClose,
+  onKeyEnter
+}) => {
   return (
     <Dialog
       fullWidth={true}
       onClose={onClose}
       aria-labelledby="customized-dialog-title"
       open={open}
+      onKeyUp={e => e.keyCode === 13 && onKeyEnter()}
     >
       <DialogTitle id="customized-dialog-title" onClose={onClose}>
         {heading}

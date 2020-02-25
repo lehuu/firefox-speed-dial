@@ -21,14 +21,22 @@ const ConfirmPopup: React.SFC<ConfirmPopupProps> = ({
   onConfirm,
   onDeny
 }) => {
+  const ref = React.createRef<HTMLButtonElement>();
+  ref.current?.focus();
+
   return (
-    <PopUp heading={heading} onClose={onClose} open={open}>
+    <PopUp
+      heading={heading}
+      onKeyEnter={onConfirm}
+      onClose={onClose}
+      open={open}
+    >
       <DialogContent>
         <Typography>{body}</Typography>
       </DialogContent>
       <DialogActions>
         <RedButton onClick={onDeny}>No</RedButton>
-        <Button onClick={onConfirm} color="primary">
+        <Button ref={ref} onClick={onConfirm} color="primary">
           Yes
         </Button>
       </DialogActions>
