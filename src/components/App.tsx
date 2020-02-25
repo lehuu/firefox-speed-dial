@@ -3,7 +3,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import theme from "../theme";
 import { CssBaseline } from "@material-ui/core";
 import { ContextMenuProvider } from "./ContextMenuProvider";
-import Content from "./content";
+import Content from "./Content";
 import { SnackbarProvider } from "notistack";
 
 const App: React.SFC<any> = () => {

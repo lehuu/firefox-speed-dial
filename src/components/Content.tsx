@@ -1,12 +1,12 @@
 import * as React from "react";
 import useGroups from "../hooks/useGroups";
-import GroupPopUp from "./groupPopup";
+import GroupPopUp from "./GroupPopup";
 import { AppBar, IconButton, withStyles } from "@material-ui/core";
 import AddCircle from "@material-ui/icons/AddCircle";
 import useContextMenu from "../hooks/useContextMenu";
 import EditContextMenu from "./EditContextMenu";
 import NewContextMenu from "./NewContextMenu";
-import ConfirmPopup from "./confirmPopup";
+import ConfirmPopup from "./ConfirmPopup";
 import { useSnackbar } from "notistack";
 import { SortableTabs, SortableTab } from "./SortableTabBar";
 import { arrayMove } from "react-sortable-hoc";

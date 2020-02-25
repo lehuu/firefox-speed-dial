@@ -4,7 +4,7 @@ import PopUp, {
   RedButton,
   DialogContent,
   DialogActions
-} from "./popup";
+} from "./Popup";
 import { Button, Typography } from "@material-ui/core";
 
 interface ConfirmPopupProps extends Omit<PopUpProps, "children"> {
