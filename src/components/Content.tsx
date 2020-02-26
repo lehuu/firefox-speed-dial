@@ -101,7 +101,7 @@ const Content: React.SFC<any> = () => {
           onDelete={() => handleDelete(group)}
         />
       ) : (
-        <NewContextMenu text="New group" onNew={handleShowEditModal} />
+        <NewContextMenu text="New group" onNew={() => handleShowEditModal()} />
       )
     );
   };
