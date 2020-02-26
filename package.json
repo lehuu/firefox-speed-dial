@@ -19,6 +19,7 @@
     "react-dom": "^16.12.0",
     "react-hook-form": "^4.9.8",
     "react-sortable-hoc": "^1.11.0",
+    "react-use": "^13.26.2",
     "typeface-roboto": "0.0.75",
     "uuid": "^3.4.0"
   },

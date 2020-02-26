@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useMeasure, useClickAway } from "react-use";
 
 interface MousePosition {
   x: number;
@@ -20,9 +21,8 @@ export const ContextMenuWrapper = React.forwardRef<
     position: MousePosition | null;
     payload: React.ReactNode | null;
   }>({ position: null, payload: null });
-
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const tooltipRect = containerRef.current?.getBoundingClientRect();
+  const [containerRef, { width, height }] = useMeasure();
+  const clickRef = React.useRef(null);
 
   React.useImperativeHandle(ref, () => ({
     show: (mousePosition, clientPayload) => {
@@ -36,44 +36,30 @@ export const ContextMenuWrapper = React.forwardRef<
     }
   }));
 
-  const handleClickOutside = e => {
-    if (containerRef.current?.contains(e.target)) {
-      // inside click
-      return;
-    }
-    // outside click
+  useClickAway(clickRef, () => {
     setState(prev => ({ ...prev, position: null }));
-  };
+  });
 
-  React.useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const style: React.CSSProperties = {
-    position: "absolute",
-    zIndex: 3000
-  };
-
-  if (state?.position && tooltipRect) {
+  const style: React.CSSProperties = { position: "absolute", zIndex: 3000 };
+  if (state?.position) {
     const { position } = state;
-
-    const extra = 5;
-
-    let x = position.x + window.scrollX + extra;
-    let y = position.y + window.scrollY + extra;
+    let x = position.x + window.scrollX;
+    let y = position.y + window.scrollY;
+    const hasSpaceRight =
+      x + width < window.scrollX + document.documentElement.clientWidth;
+    const hasSpaceBottom =
+      y + height < window.scrollY + document.documentElement.clientHeight;
+    x -= !hasSpaceRight ? width : 0;
+    y -= !hasSpaceBottom ? height : 0;
 
     style.left = `${x}px`;
     style.top = `${y}px`;
   }
-
   style.visibility = !state?.position || !state.payload ? "hidden" : "visible";
 
   return (
     <div style={style} ref={containerRef}>
-      {state.payload}
+      <div ref={clickRef}>{state.payload}</div>
     </div>
   );
 });
