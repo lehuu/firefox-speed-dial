@@ -13,6 +13,7 @@ import { arrayMove } from "react-sortable-hoc";
 import deleteGroup from "../mutations/deleteGroup";
 import updateGroupPositions from "../mutations/updateGroupPositions";
 import { Group } from "../types";
+import Dials from "./Dials";
 
 enum ContentModalType {
   None = 0,
@@ -49,6 +50,10 @@ const Content: React.SFC<any> = () => {
     groups.sort((a, b) => a.position - b.position);
     setCachedGroups(groups);
   }, [groups]);
+
+  const clampedSelectedTab = React.useMemo(() => {
+    return Math.max(Math.min(selectedTab, cachedGroups.length - 1), 0);
+  }, [selectedTab, cachedGroups.length]);
 
   const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
     setSelectedTab(newValue);
@@ -126,7 +131,7 @@ const Content: React.SFC<any> = () => {
       <FlexAppBar position="static" color="default">
         <SortableTabs
           onContextMenu={e => handleRightClick(e)}
-          value={Math.min(selectedTab, cachedGroups.length - 1)}
+          value={clampedSelectedTab}
           onChange={handleChange}
           distance={10}
           onSortEnd={handleSortEnd}
@@ -153,6 +158,9 @@ const Content: React.SFC<any> = () => {
           <AddCircle fontSize="default" />
         </CreateGroupButton>
       </FlexAppBar>
+      {cachedGroups.length > 0 && (
+        <Dials groupId={cachedGroups[clampedSelectedTab].id} />
+      )}
       <ConfirmPopup
         onDeny={handleCloseModal}
         onClose={handleCloseModal}

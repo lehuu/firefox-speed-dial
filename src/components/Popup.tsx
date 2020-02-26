@@ -88,13 +88,21 @@ const PopUp: React.SFC<PopUpProps> = ({
   onClose,
   onKeyEnter
 }) => {
+  const handleOnKeyEnter = (e: React.KeyboardEvent) => {
+    if (!onKeyEnter) {
+      return;
+    } else if (e.keyCode === 13) {
+      onKeyEnter();
+    }
+  };
+
   return (
     <Dialog
       fullWidth={true}
       onClose={onClose}
       aria-labelledby="customized-dialog-title"
       open={open}
-      onKeyUp={e => e.keyCode === 13 && onKeyEnter()}
+      onKeyUp={handleOnKeyEnter}
     >
       <DialogTitle id="customized-dialog-title" onClose={onClose}>
         {heading}

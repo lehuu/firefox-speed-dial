@@ -44,6 +44,7 @@ const GroupPopUp: React.SFC<GroupPopUpProps> = ({
       });
       return;
     }
+    enqueueSnackbar("Group deleted", { variant: "success" });
     onClose();
     onSave();
   };

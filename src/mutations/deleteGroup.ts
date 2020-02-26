@@ -1,8 +1,15 @@
-import { Group, QueryResult } from "../types";
+import { Group, QueryResult, Dial } from "../types";
 
 const deleteGroup = (group: Group): Promise<QueryResult> => {
-  const promise = browser.storage.sync.get({ groups: [] });
+  const promise = browser.storage.sync.get({ dials: [] });
   return promise
+    .then(res => {
+      const filteredDials = (res.dials as Dial[]).filter(
+        dial => dial.group !== group.id
+      );
+      return browser.storage.sync.set({ dials: filteredDials });
+    })
+    .then(() => browser.storage.sync.get({ groups: [] }))
     .then(res => {
       const groups = res.groups as Group[];
       const filteredGroup = groups.filter(el => el.id != group.id);
