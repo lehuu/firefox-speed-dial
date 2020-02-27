@@ -15,6 +15,7 @@ import updateDial from "../mutations/updateDial";
 import deleteDial from "../mutations/deleteDial";
 import ColorPicker from "./ColorPicker";
 import parseLink from "../utils/parseLink";
+import getRandomColor from "../utils/getRandomColor";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -146,7 +147,7 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
               return { value: newValue };
             }}
             name="color"
-            defaultValue={dial ? dial.color : "#000"}
+            defaultValue={dial ? dial.color : getRandomColor()}
           />
         </DialogContent>
         <DialogActions>
