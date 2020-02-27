@@ -14,6 +14,7 @@ import createDial from "../mutations/createDial";
 import updateDial from "../mutations/updateDial";
 import deleteDial from "../mutations/deleteDial";
 import ColorPicker from "./ColorPicker";
+import parseLink from "../utils/parseLink";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -44,7 +45,14 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
   dial
 }) => {
   const classes = useStyles();
-  const { register, handleSubmit, errors, control } = useForm<FormData>();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    control,
+    getValues,
+    setValue
+  } = useForm<FormData>();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleDelete = async () => {
@@ -62,6 +70,17 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
     onClose();
     onSave();
   };
+
+  const handleBlurLink = () => {
+    const { link, alias } = getValues();
+    if (alias) {
+      return;
+    }
+    const url = link;
+    const parsedAlias = parseLink(url);
+    setValue("alias", parsedAlias);
+  };
+
   const handleSave = async (data: FormData) => {
     let { link, alias, color } = data;
     alias = alias ? alias : link;
@@ -89,30 +108,36 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
         onSubmit={handleSubmit(handleSave)}
       >
         <DialogContent>
-          <TextField
-            autoFocus
-            fullWidth
-            error={!!errors.link}
-            helperText={errors.link && errors.link.message}
-            name="link"
-            inputRef={register({
+          <Controller
+            as={
+              <TextField
+                autoFocus
+                variant="outlined"
+                error={!!errors.link}
+                helperText={errors.link && errors.link.message}
+                label="Link"
+                fullWidth
+                onBlur={handleBlurLink}
+              />
+            }
+            rules={{
               required: "Link is required"
-            })}
+            }}
+            name="link"
+            control={control}
             defaultValue={dial?.link || ""}
-            id="standard-basic"
-            variant="outlined"
-            label="Link"
+            onChange={([event]) => {
+              return { value: event.target.value };
+            }}
           />
-          <TextField
-            fullWidth
-            error={!!errors.alias}
-            helperText={errors.alias && errors.alias.message}
-            inputRef={register}
+          <Controller
+            as={<TextField variant="outlined" label="Alias" fullWidth />}
             name="alias"
+            control={control}
             defaultValue={dial?.alias || ""}
-            id="standard-basic"
-            variant="outlined"
-            label="Alias"
+            onChange={([event]) => {
+              return { value: event.target.value };
+            }}
           />
           <Controller
             as={ColorPicker}

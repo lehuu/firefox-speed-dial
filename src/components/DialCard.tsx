@@ -38,7 +38,6 @@ interface DialCardProps {
 
 export const DialCard: React.SFC<DialCardProps> = ({ dial }) => {
   const classes = useStyles({ backgroundColor: dial.color });
-  console.log(dial.color);
   const [header, subtitle] = splitLink(dial.alias);
 
   return (
