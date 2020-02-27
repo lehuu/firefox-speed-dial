@@ -7,7 +7,48 @@ import ConfirmPopup from "./ConfirmPopup";
 import DialPopUp from "./DialPopup";
 import EditContextMenu from "./EditContextMenu";
 import NewContextMenu from "./NewContextMenu";
+import AddCircle from "@material-ui/icons/AddCircle";
 import deleteDial from "../mutations/deleteDial";
+import {
+  Card,
+  Grid,
+  Container,
+  makeStyles,
+  Typography,
+  Icon,
+  Box
+} from "@material-ui/core";
+import { DialCard } from "./DialCard";
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: "flex",
+    justifyContent: "space-around",
+    flexDirection: "column",
+    paddingTop: "60px",
+    minHeight: "100%"
+  },
+  button: {
+    paddingTop: "56.25%",
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    borderColor: theme.palette.text.primary,
+    borderWidth: "1px",
+    borderStyle: "dashed",
+    opacity: 0.5,
+    "&:hover": {
+      opacity: 1,
+      cursor: "pointer"
+    }
+  },
+  icon: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%,-50%)",
+    fontSize: 60
+  }
+}));
 
 enum ContentModalType {
   None = 0,
@@ -20,6 +61,7 @@ interface DialProps {
 }
 
 const Dials: React.SFC<DialProps> = ({ groupId }) => {
+  const classes = useStyles();
   const { dials, isLoading, error, refetch } = useDials(groupId);
   const [modalState, setModalState] = React.useState<{
     modalType: ContentModalType;
@@ -85,13 +127,33 @@ const Dials: React.SFC<DialProps> = ({ groupId }) => {
   };
 
   return (
-    <div style={{ height: "100%" }} onContextMenu={handleRightClick}>
-      {dials.map(dial => (
-        <div onContextMenu={e => handleRightClick(e, dial)} key={dial.id}>
-          {dial.alias}
-        </div>
-      ))}
-      <button onClick={() => handleShowEditModal()}>Add new dial</button>
+    <div className={classes.root} onContextMenu={handleRightClick}>
+      <Container>
+        <Grid container spacing={3}>
+          {dials.map(dial => (
+            <Grid
+              onContextMenu={e => handleRightClick(e, dial)}
+              key={dial.id}
+              item
+              xs={12}
+              sm={6}
+              md={4}
+            >
+              <DialCard dial={dial} />
+            </Grid>
+          ))}
+          <Grid item xs={12} sm={6} md={4}>
+            <Box
+              onClick={() => handleShowEditModal()}
+              className={classes.button}
+            >
+              <AddCircle className={classes.icon} />
+            </Box>
+          </Grid>
+        </Grid>
+      </Container>
+      <div />
+
       <ConfirmPopup
         onDeny={handleCloseModal}
         onClose={handleCloseModal}
