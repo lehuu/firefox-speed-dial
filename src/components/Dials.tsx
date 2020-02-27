@@ -12,6 +12,7 @@ import deleteDial from "../mutations/deleteDial";
 import { Grid, Container, makeStyles, Box } from "@material-ui/core";
 import { SortableCard, SortableCardContainer } from "./DialCard";
 import { arrayMove } from "react-sortable-hoc";
+import updateDialPositions from "../mutations/updateDialPositions";
 
 const useStyles = makeStyles(theme => ({
   root: {
