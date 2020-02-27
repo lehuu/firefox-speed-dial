@@ -1,7 +1,15 @@
 import * as React from "react";
 import { Dial } from "../types";
-import { makeStyles, Card, Typography, Box, Link } from "@material-ui/core";
+import {
+  makeStyles,
+  Card,
+  Typography,
+  Box,
+  Link,
+  Grid
+} from "@material-ui/core";
 import convertHexToRGB from "../utils/convertHexToRGB";
+import { SortableElement, SortableContainer } from "react-sortable-hoc";
 
 const useStyles = makeStyles(theme => ({
   root: (props: { backgroundColor: string }) => {
@@ -15,14 +23,18 @@ const useStyles = makeStyles(theme => ({
       : props.backgroundColor;
 
     return {
-      paddingTop: "56.25%",
-      position: "relative",
-      // backgroundColor: props.backgroundColor,
-      transition: "background-color .15s linear",
-      backgroundColor: bgColor,
-
-      "&:hover": {
+      "&> .MuiCard-root": {
+        display: "block",
+        paddingTop: "56.25%",
+        position: "relative",
+        transition: "background-color .15s linear",
+        backgroundColor: bgColor
+      },
+      "&:hover >.MuiCard-root": {
         backgroundColor: hoverBgColor
+      },
+      "& *": {
+        pointerEvents: "none"
       }
     };
   },
@@ -36,40 +48,57 @@ const useStyles = makeStyles(theme => ({
   },
   header: {
     textOverflow: "ellipsis",
-    overflow: "hidden"
+    pointerEvents: "none",
+    overflow: "hidden",
+    userSelect: "none"
   },
   subtitle: {
     textOverflow: "ellipsis",
+    pointerEvents: "none",
     overflow: "hidden",
-    textAlign: "end"
+    textAlign: "end",
+    userSelect: "none"
   }
 }));
+
+export const SortableCard = SortableElement(({ dial, clickable, ...rest }) => {
+  const classes = useStyles({ backgroundColor: dial.color });
+  const [header, subtitle] = splitLink(dial.alias);
+  return (
+    <Grid {...rest} item xs={12} sm={6} md={4}>
+      <Link className={classes.root} draggable={false} href={dial.link}>
+        <Card>
+          <Box component="div" overflow="hidden" className={classes.centered}>
+            <Typography
+              draggable={false}
+              className={classes.header}
+              variant="h3"
+            >
+              {header}
+            </Typography>
+            <Typography
+              draggable={false}
+              className={classes.subtitle}
+              variant="h6"
+            >
+              {subtitle}
+            </Typography>
+          </Box>
+        </Card>
+      </Link>
+    </Grid>
+  );
+});
+
+export const SortableCardContainer = SortableContainer(({ children }) => {
+  return (
+    <Grid container spacing={3}>
+      {children}
+    </Grid>
+  );
+});
 
 const splitLink = (content: string) => {
   const result = content.split(".");
   return result;
-};
-
-interface DialCardProps {
-  dial: Dial;
-}
-
-export const DialCard: React.SFC<DialCardProps> = ({ dial }) => {
-  const classes = useStyles({ backgroundColor: dial.color });
-  const [header, subtitle] = splitLink(dial.alias);
-
-  return (
-    <Link href={dial.link}>
-      <Card className={classes.root}>
-        <Box component="div" overflow="hidden" className={classes.centered}>
-          <Typography className={classes.header} variant="h3">
-            {header}
-          </Typography>
-          <Typography className={classes.subtitle} variant="h6">
-            {subtitle}
-          </Typography>
-        </Box>
-      </Card>
-    </Link>
-  );
 };

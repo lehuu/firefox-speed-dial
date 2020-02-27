@@ -10,7 +10,8 @@ import NewContextMenu from "./NewContextMenu";
 import AddCircle from "@material-ui/icons/AddCircle";
 import deleteDial from "../mutations/deleteDial";
 import { Grid, Container, makeStyles, Box } from "@material-ui/core";
-import { DialCard } from "./DialCard";
+import { SortableCard, SortableCardContainer } from "./DialCard";
+import { arrayMove } from "react-sortable-hoc";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -59,9 +60,11 @@ const Dials: React.SFC<DialProps> = ({ groupId }) => {
     modalType: ContentModalType;
     selectedDial?: Dial;
   }>({ modalType: ContentModalType.None });
+  const [cachedDials, setCachedDials] = React.useState(dials);
 
   React.useMemo(() => {
     dials.sort((a, b) => a.position - b.position);
+    setCachedDials(dials);
   }, [dials]);
 
   const { show, hide } = useContextMenu();
@@ -118,21 +121,38 @@ const Dials: React.SFC<DialProps> = ({ groupId }) => {
     );
   };
 
+  const handleSortEnd = async ({ oldIndex, newIndex }) => {
+    const sortedDials = arrayMove<Dial>(
+      cachedDials,
+      oldIndex,
+      newIndex
+    ).map((el, i) => ({ ...el, position: i }));
+    setCachedDials(sortedDials);
+
+    const result = await updateDialPositions(sortedDials);
+    if (result.error) {
+      enqueueSnackbar("Error", { variant: "error" });
+      return;
+    }
+  };
+
   return (
     <div className={classes.root} onContextMenu={handleRightClick}>
       <Container>
-        <Grid container spacing={3}>
-          {dials.map(dial => (
-            <Grid
+        <SortableCardContainer
+          axis="xy"
+          distance={10}
+          onSortStat
+          onSortEnd={handleSortEnd}
+          useDrag
+        >
+          {cachedDials.map((dial, i) => (
+            <SortableCard
               onContextMenu={e => handleRightClick(e, dial)}
               key={dial.id}
-              item
-              xs={12}
-              sm={6}
-              md={4}
-            >
-              <DialCard dial={dial} />
-            </Grid>
+              index={i}
+              dial={dial}
+            />
           ))}
           <Grid item xs={12} sm={6} md={4}>
             <Box
@@ -142,7 +162,7 @@ const Dials: React.SFC<DialProps> = ({ groupId }) => {
               <AddCircle className={classes.icon} />
             </Box>
           </Grid>
-        </Grid>
+        </SortableCardContainer>
       </Container>
       <div />
 
