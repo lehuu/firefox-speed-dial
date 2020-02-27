@@ -2,10 +2,21 @@
 
 This project aims to display saved sites in the same style as Opera's Speed Dial.
 
+## Running the app
+
+to run and test the app
+
+     npm i
+     npm run develop
+
+to build the app into the folder /web-ext-artifacts
+
+    npm run build
+
 ## Attributions
 
-* [Fontawesome](https://github.com/JakeWharton/butterknife)
-* [Toolbar Dial](https://github.com/lucaseverett/toolbar-dial-firefox)
+- [Fontawesome](https://github.com/JakeWharton/butterknife)
+- [Toolbar Dial](https://github.com/lucaseverett/toolbar-dial-firefox)
 
 ## License
 
