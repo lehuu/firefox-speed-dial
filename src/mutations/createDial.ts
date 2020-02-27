@@ -4,6 +4,7 @@ import { Dial, QueryResult } from "../types";
 const createDial = (
   link: string,
   alias: string,
+  color: string,
   group: string
 ): Promise<QueryResult> => {
   const promise = browser.storage.sync.get({ dials: [] });
@@ -14,6 +15,7 @@ const createDial = (
         id: uuid(),
         link,
         alias,
+        color,
         group,
         position: dials.length
       };

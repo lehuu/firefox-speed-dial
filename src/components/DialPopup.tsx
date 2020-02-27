@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import PopUp, {
   PopUpProps,
   RedButton,
@@ -13,6 +13,7 @@ import { Dial } from "../types";
 import createDial from "../mutations/createDial";
 import updateDial from "../mutations/updateDial";
 import deleteDial from "../mutations/deleteDial";
+import ColorPicker from "./ColorPicker";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,6 +26,7 @@ const useStyles = makeStyles(theme => ({
 type FormData = {
   link: string;
   alias?: string;
+  color: string;
 };
 
 interface DialPopUpProps extends Omit<PopUpProps, "children"> {
@@ -42,7 +44,7 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
   dial
 }) => {
   const classes = useStyles();
-  const { register, handleSubmit, errors } = useForm<FormData>();
+  const { register, handleSubmit, errors, control } = useForm<FormData>();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleDelete = async () => {
@@ -61,12 +63,12 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
     onSave();
   };
   const handleSave = async (data: FormData) => {
-    let { link, alias } = data;
+    let { link, alias, color } = data;
     alias = alias ? alias : link;
 
     const result = !dial
-      ? await createDial(link, alias, groupId)
-      : await updateDial({ ...dial, link: data.link, alias: data.alias });
+      ? await createDial(link, alias, color, groupId)
+      : await updateDial({ ...dial, link: link, alias: alias, color });
 
     if (result.error) {
       enqueueSnackbar(`Error saving dial: ${result.error.name}`, {
@@ -111,6 +113,15 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
             id="standard-basic"
             variant="outlined"
             label="Alias"
+          />
+          <Controller
+            as={ColorPicker}
+            control={control}
+            onChangeComplete={([newValue]) => {
+              return { value: newValue };
+            }}
+            name="color"
+            defaultValue={dial ? dial.color : "#000"}
           />
         </DialogContent>
         <DialogActions>

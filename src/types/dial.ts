@@ -4,4 +4,5 @@ export interface Dial {
   group: string;
   link: string;
   alias: string;
+  color: string;
 }

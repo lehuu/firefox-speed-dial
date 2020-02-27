@@ -9,15 +9,7 @@ import EditContextMenu from "./EditContextMenu";
 import NewContextMenu from "./NewContextMenu";
 import AddCircle from "@material-ui/icons/AddCircle";
 import deleteDial from "../mutations/deleteDial";
-import {
-  Card,
-  Grid,
-  Container,
-  makeStyles,
-  Typography,
-  Icon,
-  Box
-} from "@material-ui/core";
+import { Grid, Container, makeStyles, Box } from "@material-ui/core";
 import { DialCard } from "./DialCard";
 
 const useStyles = makeStyles(theme => ({

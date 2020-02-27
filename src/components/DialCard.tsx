@@ -1,12 +1,13 @@
 import * as React from "react";
 import { Dial } from "../types";
-import { makeStyles, Card, Typography, Box } from "@material-ui/core";
+import { makeStyles, Card, Typography, Box, Link } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
-  root: {
+  root: (props: { backgroundColor: string }) => ({
     paddingTop: "56.25%",
-    position: "relative"
-  },
+    position: "relative",
+    backgroundColor: props.backgroundColor
+  }),
   centered: {
     padding: theme.spacing(2),
     position: "absolute",
@@ -26,7 +27,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const createContent = (content: string) => {
+const splitLink = (content: string) => {
   const result = content.split(".");
   return result;
 };
@@ -36,11 +37,12 @@ interface DialCardProps {
 }
 
 export const DialCard: React.SFC<DialCardProps> = ({ dial }) => {
-  const classes = useStyles();
-  const [header, subtitle] = createContent(dial.alias);
+  const classes = useStyles({ backgroundColor: dial.color });
+  console.log(dial.color);
+  const [header, subtitle] = splitLink(dial.alias);
 
   return (
-    <a href={dial.link}>
+    <Link href={dial.link}>
       <Card className={classes.root}>
         <Box component="div" overflow="hidden" className={classes.centered}>
           <Typography className={classes.header} variant="h3">
@@ -51,6 +53,6 @@ export const DialCard: React.SFC<DialCardProps> = ({ dial }) => {
           </Typography>
         </Box>
       </Card>
-    </a>
+    </Link>
   );
 };
