@@ -128,7 +128,7 @@ const Content: React.SFC<any> = () => {
 
   return (
     <>
-      <FlexAppBar position="static" color="default">
+      <FlexAppBar position="fixed" color="default">
         <SortableTabs
           onContextMenu={e => handleRightClick(e)}
           value={clampedSelectedTab}

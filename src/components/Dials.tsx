@@ -85,7 +85,7 @@ const Dials: React.SFC<DialProps> = ({ groupId }) => {
   };
 
   return (
-    <div>
+    <div style={{ height: "100%" }} onContextMenu={handleRightClick}>
       {dials.map(dial => (
         <div onContextMenu={e => handleRightClick(e, dial)} key={dial.id}>
           {dial.alias}

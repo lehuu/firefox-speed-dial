@@ -55,7 +55,7 @@ export const ContextMenuWrapper = React.forwardRef<
     style.left = `${x}px`;
     style.top = `${y}px`;
   }
-  style.visibility = !state?.position || !state.payload ? "hidden" : "visible";
+  style.display = !state?.position || !state.payload ? "none" : "block";
 
   return (
     <div style={style} ref={containerRef}>
