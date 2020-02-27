@@ -21,6 +21,8 @@ import updateGroupPositions from "../mutations/updateGroupPositions";
 import { Group } from "../types";
 import Dials from "./Dials";
 import { Loader } from "./Loader";
+import useDefaultTab from "../hooks/useDefaultTab";
+import saveDefaultTab from "../mutations/saveDefaultTab";
 
 enum ContentModalType {
   None = 0,
@@ -44,6 +46,7 @@ const CreateGroupButton = withStyles({
 
 const Content: React.SFC<any> = () => {
   const { groups, isLoading, error, refetch } = useGroups();
+  const { defaultTab, isLoading: defaultTabIsLoading } = useDefaultTab();
   const [modalState, setModalState] = React.useState<{
     modalType: ContentModalType;
     selectedGroup?: Group;
@@ -52,6 +55,10 @@ const Content: React.SFC<any> = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [cachedGroups, setCachedGroups] = React.useState(groups);
   const [selectedTab, setSelectedTab] = React.useState(0);
+
+  React.useEffect(() => {
+    setSelectedTab(defaultTab);
+  }, [defaultTab]);
 
   React.useMemo(() => {
     groups.sort((a, b) => a.position - b.position);
@@ -64,6 +71,7 @@ const Content: React.SFC<any> = () => {
 
   const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
     setSelectedTab(newValue);
+    saveDefaultTab(newValue);
   };
 
   if (error) {
@@ -132,6 +140,10 @@ const Content: React.SFC<any> = () => {
       return;
     }
   };
+
+  if (defaultTabIsLoading) {
+    return <Loader open={isLoading} />;
+  }
 
   return (
     <>
