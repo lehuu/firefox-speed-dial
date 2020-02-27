@@ -1,7 +1,13 @@
 import * as React from "react";
 import useGroups from "../hooks/useGroups";
 import GroupPopUp from "./GroupPopup";
-import { AppBar, IconButton, withStyles } from "@material-ui/core";
+import {
+  AppBar,
+  IconButton,
+  withStyles,
+  CircularProgress,
+  Backdrop
+} from "@material-ui/core";
 import AddCircle from "@material-ui/icons/AddCircle";
 import useContextMenu from "../hooks/useContextMenu";
 import EditContextMenu from "./EditContextMenu";
@@ -14,6 +20,7 @@ import deleteGroup from "../mutations/deleteGroup";
 import updateGroupPositions from "../mutations/updateGroupPositions";
 import { Group } from "../types";
 import Dials from "./Dials";
+import { Loader } from "./Loader";
 
 enum ContentModalType {
   None = 0,
@@ -161,6 +168,7 @@ const Content: React.SFC<any> = () => {
       {cachedGroups.length > 0 && (
         <Dials groupId={cachedGroups[clampedSelectedTab].id} />
       )}
+      <Loader open={isLoading} />
       <ConfirmPopup
         onDeny={handleCloseModal}
         onClose={handleCloseModal}

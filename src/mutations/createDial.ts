@@ -11,13 +11,14 @@ const createDial = (
   return promise
     .then(res => {
       const dials = res.dials as Dial[];
+      const dialsInGroup = dials.filter(dial => dial.group === group);
       const newDial: Dial = {
         id: uuid(),
         link,
         alias,
         color,
         group,
-        position: dials.length
+        position: dialsInGroup.length
       };
       dials.push(newDial);
       return Promise.all([browser.storage.sync.set({ dials: dials }), newDial]);

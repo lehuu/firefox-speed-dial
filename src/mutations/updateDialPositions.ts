@@ -1,6 +1,8 @@
 import { Dial, QueryResult } from "../types";
 
 const updateDialPositions = (dials: Dial[]): Promise<QueryResult> => {
+  console.log("updating dial positions");
+
   const promise = browser.storage.sync.get({ dials: [] });
 
   // const promise = browser.storage.sync.set({ dials: dials });
@@ -9,7 +11,7 @@ const updateDialPositions = (dials: Dial[]): Promise<QueryResult> => {
   return promise
     .then(res => {
       const filteredDials = (res.dials as Dial[]).filter(
-        dial => ids.indexOf(dial.id) > -1
+        dial => ids.indexOf(dial.id) < 0
       );
       filteredDials.push(...dials);
       return browser.storage.sync.set({ dials: filteredDials });

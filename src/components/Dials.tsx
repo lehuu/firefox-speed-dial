@@ -9,10 +9,11 @@ import EditContextMenu from "./EditContextMenu";
 import NewContextMenu from "./NewContextMenu";
 import AddCircle from "@material-ui/icons/AddCircle";
 import deleteDial from "../mutations/deleteDial";
-import { Grid, Container, makeStyles, Box } from "@material-ui/core";
+import { Grid, Container, makeStyles, Box, Fade } from "@material-ui/core";
 import { SortableCard, SortableCardContainer } from "./DialCard";
 import { arrayMove } from "react-sortable-hoc";
 import updateDialPositions from "../mutations/updateDialPositions";
+import { Loader } from "./Loader";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -139,32 +140,36 @@ const Dials: React.SFC<DialProps> = ({ groupId }) => {
 
   return (
     <div className={classes.root} onContextMenu={handleRightClick}>
-      <Container>
-        <SortableCardContainer
-          axis="xy"
-          distance={10}
-          onSortStat
-          onSortEnd={handleSortEnd}
-          useDrag
-        >
-          {cachedDials.map((dial, i) => (
-            <SortableCard
-              onContextMenu={e => handleRightClick(e, dial)}
-              key={dial.id}
-              index={i}
-              dial={dial}
-            />
-          ))}
-          <Grid item xs={12} sm={6} md={4}>
-            <Box
-              onClick={() => handleShowEditModal()}
-              className={classes.button}
-            >
-              <AddCircle className={classes.icon} />
-            </Box>
-          </Grid>
-        </SortableCardContainer>
-      </Container>
+      <Fade in={!isLoading}>
+        <Container>
+          <SortableCardContainer
+            axis="xy"
+            distance={10}
+            onSortStat
+            onSortEnd={handleSortEnd}
+            useDrag
+          >
+            {cachedDials.map((dial, i) => (
+              <SortableCard
+                onContextMenu={e => handleRightClick(e, dial)}
+                key={dial.id}
+                index={i}
+                dial={dial}
+              />
+            ))}
+            <Grid item xs={12} sm={6} md={4}>
+              <Box
+                onClick={() => handleShowEditModal()}
+                className={classes.button}
+              >
+                <AddCircle className={classes.icon} />
+              </Box>
+            </Grid>
+          </SortableCardContainer>
+        </Container>
+      </Fade>
+
+      <Loader open={isLoading} />
       <div />
 
       <ConfirmPopup

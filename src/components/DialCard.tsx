@@ -64,6 +64,7 @@ const useStyles = makeStyles(theme => ({
 export const SortableCard = SortableElement(({ dial, clickable, ...rest }) => {
   const classes = useStyles({ backgroundColor: dial.color });
   const [header, subtitle] = splitLink(dial.alias);
+  console.log(dial.position);
   return (
     <Grid {...rest} item xs={12} sm={6} md={4}>
       <Link className={classes.root} draggable={false} href={dial.link}>
