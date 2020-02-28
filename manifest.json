@@ -11,7 +11,8 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "speeddial@bytecruncher.com",
-      "strict_min_version": "42.0"
+      "strict_min_version": "42.0",
+      "update_url": "https://bytecruncher.com/files/speed-dial-updates.json"
     }
   },
   "options_ui": {
