@@ -1,8 +1,6 @@
 import { Dial, QueryResult } from "../types";
 
 const updateDialPositions = (dials: Dial[]): Promise<QueryResult> => {
-  console.log("updating dial positions");
-
   const promise = browser.storage.sync.get({ dials: [] });
 
   // const promise = browser.storage.sync.set({ dials: dials });
