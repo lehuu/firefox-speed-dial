@@ -130,6 +130,7 @@ select {
   .setting-option {
     display: inline-block;
     max-width: 350px;
+    padding-bottom: 0.5rem;
   }
 
   .setting-wrapper.theme {
