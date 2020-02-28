@@ -3,7 +3,6 @@ import { Dial, QueryResult } from "../types";
 const updateDialPositions = (dials: Dial[]): Promise<QueryResult> => {
   const promise = browser.storage.sync.get({ dials: [] });
 
-  // const promise = browser.storage.sync.set({ dials: dials });
   const ids = dials.map(dial => dial.id);
 
   return promise

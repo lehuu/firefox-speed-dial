@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Dial } from "../types";
 import {
   makeStyles,
   Card,
