@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
       : props.backgroundColor;
 
     return {
+      whiteSpace: "nowrap",
       "&> .MuiCard-root": {
         display: "block",
         paddingTop: "56.25%",
