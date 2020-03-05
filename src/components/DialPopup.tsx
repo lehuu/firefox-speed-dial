@@ -143,7 +143,7 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
           <Controller
             as={ColorPicker}
             control={control}
-            onChangeComplete={([newValue]) => {
+            onChange={([newValue]) => {
               return { value: newValue };
             }}
             name="color"
