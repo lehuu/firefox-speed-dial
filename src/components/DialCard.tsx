@@ -1,12 +1,5 @@
 import * as React from "react";
-import {
-  makeStyles,
-  Card,
-  Typography,
-  Box,
-  Link,
-  Grid
-} from "@material-ui/core";
+import { makeStyles, Card, Typography, Box, Grid } from "@material-ui/core";
 import convertHexToRGB from "../utils/convertHexToRGB";
 import { SortableElement, SortableContainer } from "react-sortable-hoc";
 
@@ -66,7 +59,7 @@ export const SortableCard = SortableElement(({ dial, clickable, ...rest }) => {
   const [header, subtitle] = splitLink(dial.alias);
   return (
     <Grid {...rest} item xs={12} sm={6} md={4}>
-      <Link className={classes.root} draggable={false} href={dial.link}>
+      <a className={classes.root} draggable={false} href={dial.link}>
         <Card>
           <Box component="div" overflow="hidden" className={classes.centered}>
             <Typography
@@ -85,7 +78,7 @@ export const SortableCard = SortableElement(({ dial, clickable, ...rest }) => {
             </Typography>
           </Box>
         </Card>
-      </Link>
+      </a>
     </Grid>
   );
 });
