@@ -52,8 +52,8 @@ export const ContextMenuWrapper = React.forwardRef<
     x -= !hasSpaceRight ? width : 0;
     y -= !hasSpaceBottom ? height : 0;
 
-    style.left = `${x}px`;
-    style.top = `${y}px`;
+    style.left = `${x + 4}px`;
+    style.top = `${y + 4}px`;
   }
   style.display = !state?.position || !state.payload ? "none" : "block";
 
