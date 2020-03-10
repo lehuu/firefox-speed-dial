@@ -6,7 +6,7 @@ enum UrlType {
 const getLinkName = url => {
   let name = "";
   try {
-    name = /:\/\/(?:www\.)?(.*?)(?:\?|\/|$)/i.exec(url)[1].toLowerCase();
+    name = /:\/\/(?:www\.|)?(.*?)(?:\?|\/|$)/i.exec(url)[1].toLowerCase();
   } finally {
     return name;
   }
