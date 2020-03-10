@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Speed Dial",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "permissions": ["storage"],
   "description": "Speed Dial replaces the new tab functionality to display saved bookmarks similar to Opera's Speed Dial",
   "chrome_url_overrides": {
