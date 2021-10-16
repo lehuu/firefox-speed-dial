@@ -1,6 +1,9 @@
 # Firefox Speed Dial
 
-This project aims to display saved sites in the same style as Opera's Speed Dial.
+
+A little side project of mine which aims to display saved sites in the same style as Opera's Speed Dial.
+
+![Alt Text](./static/ScreenGrab.gif)
 
 ## Running the app
 
@@ -20,7 +23,7 @@ to build the app into the folder /web-ext-artifacts
 
 ## License
 
-    Copyright 2020 Phuoc Le
+  Copyright 2021 Phuoc Le
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
