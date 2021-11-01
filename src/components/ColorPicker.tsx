@@ -3,7 +3,7 @@ import * as React from "react";
 import { ChromePicker, ColorResult, SwatchesPicker } from "react-color";
 import { makeStyles, Popover } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   swatch: {
     padding: theme.spacing(1),
     borderRadius: theme.shape.borderRadius,
@@ -11,17 +11,17 @@ const useStyles = makeStyles(theme => ({
     borderColor: theme.palette.text.disabled,
     borderStyle: "solid",
     display: "inline-block",
-    cursor: "pointer"
+    cursor: "pointer",
   },
   color: (props: { backgroundColor: string }) => ({
     width: "36px",
     height: "14px",
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: props.backgroundColor
+    backgroundColor: props.backgroundColor,
   }),
   popover: {
-    marginTop: theme.spacing(1)
-  }
+    marginTop: theme.spacing(1),
+  },
 }));
 
 interface ColorPickerProps {
@@ -29,11 +29,14 @@ interface ColorPickerProps {
   onChange?: (newValue: string) => void;
 }
 
-const ColorPicker: React.SFC<ColorPickerProps> = ({ value, onChange }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+const ColorPicker: React.FunctionComponent<ColorPickerProps> = ({
+  value,
+  onChange,
+}) => {
+  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const classes = useStyles({ backgroundColor: value });
 
-  const handleClick = event => {
+  const handleClick = (event: React.MouseEvent) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -60,11 +63,11 @@ const ColorPicker: React.SFC<ColorPickerProps> = ({ value, onChange }) => {
         onClose={handleClose}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "left"
+          horizontal: "left",
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "left"
+          horizontal: "left",
         }}
       >
         <SwatchesPicker color={value} onChange={handleChange} />
