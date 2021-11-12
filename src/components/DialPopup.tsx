@@ -4,7 +4,7 @@ import PopUp, {
   PopUpProps,
   RedButton,
   DialogContent,
-  DialogActions
+  DialogActions,
 } from "./Popup";
 import TextField from "@material-ui/core/TextField";
 import { Button, makeStyles } from "@material-ui/core";
@@ -17,12 +17,12 @@ import ColorPicker from "./ColorPicker";
 import parseLink from "../utils/parseLink";
 import getRandomColor from "../utils/getRandomColor";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
-      marginBottom: theme.spacing(2)
-    }
-  }
+      marginBottom: theme.spacing(2),
+    },
+  },
 }));
 
 type FormData = {
@@ -37,23 +37,17 @@ interface DialPopUpProps extends Omit<PopUpProps, "children"> {
   onSave: () => void;
 }
 
-const DialPopUp: React.SFC<DialPopUpProps> = ({
+const DialPopUp: React.FunctionComponent<DialPopUpProps> = ({
   heading,
   onClose,
   onSave,
   groupId,
   open,
-  dial
+  dial,
 }) => {
   const classes = useStyles();
-  const {
-    register,
-    handleSubmit,
-    errors,
-    control,
-    getValues,
-    setValue
-  } = useForm<FormData>();
+  const { register, handleSubmit, errors, control, getValues, setValue } =
+    useForm<FormData>();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleDelete = async () => {
@@ -63,7 +57,7 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
     const result = await deleteDial(dial);
     if (result.error) {
       enqueueSnackbar(`Error deleting dial: ${result.error.name}`, {
-        variant: "error"
+        variant: "error",
       });
       return;
     }
@@ -92,7 +86,7 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
 
     if (result.error) {
       enqueueSnackbar(`Error saving dial: ${result.error.name}`, {
-        variant: "error"
+        variant: "error",
       });
     } else {
       enqueueSnackbar("Dial saved", { variant: "success" });
@@ -122,7 +116,7 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
               />
             }
             rules={{
-              required: "Link is required"
+              required: "Link is required",
             }}
             name="link"
             control={control}

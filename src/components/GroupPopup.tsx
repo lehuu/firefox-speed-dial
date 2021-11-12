@@ -4,7 +4,7 @@ import PopUp, {
   PopUpProps,
   RedButton,
   DialogContent,
-  DialogActions
+  DialogActions,
 } from "./Popup";
 import TextField from "@material-ui/core/TextField";
 import { Button } from "@material-ui/core";
@@ -23,12 +23,12 @@ interface GroupPopUpProps extends Omit<PopUpProps, "children"> {
   onSave: () => void;
 }
 
-const GroupPopUp: React.SFC<GroupPopUpProps> = ({
+const GroupPopUp: React.FunctionComponent<GroupPopUpProps> = ({
   heading,
   onClose,
   onSave,
   open,
-  group
+  group,
 }) => {
   const { register, handleSubmit, errors } = useForm<FormData>();
   const { enqueueSnackbar } = useSnackbar();
@@ -40,7 +40,7 @@ const GroupPopUp: React.SFC<GroupPopUpProps> = ({
     const result = await deleteGroup(group);
     if (result.error) {
       enqueueSnackbar(`Error deleting group: ${result.error.name}`, {
-        variant: "error"
+        variant: "error",
       });
       return;
     }
@@ -54,7 +54,7 @@ const GroupPopUp: React.SFC<GroupPopUpProps> = ({
       : await updateGroup({ ...group, title: data.title });
     if (result.error) {
       enqueueSnackbar(`Error saving group: ${result.error.name}`, {
-        variant: "error"
+        variant: "error",
       });
     } else {
       enqueueSnackbar("Group saved", { variant: "success" });
@@ -74,7 +74,7 @@ const GroupPopUp: React.SFC<GroupPopUpProps> = ({
             helperText={errors.title && errors.title.message}
             name="title"
             inputRef={register({
-              required: "Title is required"
+              required: "Title is required",
             })}
             defaultValue={group?.title || ""}
             id="standard-basic"

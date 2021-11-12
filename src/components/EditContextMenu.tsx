@@ -4,20 +4,20 @@ import {
   ListItemIcon,
   withStyles,
   MenuItem,
-  ListItemText
+  ListItemText,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
-const StyledMenuItem = withStyles(theme => ({
+const StyledMenuItem = withStyles((theme) => ({
   root: {
     "&:focus": {
       backgroundColor: theme.palette.primary.main,
       "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
-        color: theme.palette.common.white
-      }
-    }
-  }
+        color: theme.palette.common.white,
+      },
+    },
+  },
 }))(MenuItem);
 
 interface EditContextMenuProps {
@@ -25,9 +25,9 @@ interface EditContextMenuProps {
   onDelete: () => void;
 }
 
-const EditContextMenu: React.SFC<EditContextMenuProps> = ({
+const EditContextMenu: React.FunctionComponent<EditContextMenuProps> = ({
   onEdit,
-  onDelete
+  onDelete,
 }) => {
   return (
     <Paper>

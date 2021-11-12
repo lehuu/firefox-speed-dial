@@ -6,7 +6,7 @@ import { ContextMenuProvider } from "./ContextMenuProvider";
 import Content from "./Content";
 import { SnackbarProvider } from "notistack";
 
-const App: React.SFC<any> = () => {
+const App: React.FunctionComponent<any> = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

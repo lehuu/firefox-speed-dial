@@ -1,18 +1,18 @@
 import * as React from "react";
 import { makeStyles, Backdrop, CircularProgress } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.appBar - 50,
-    color: "#fff"
-  }
+    color: "#fff",
+  },
 }));
 
 interface LoaderProps {
   open: boolean;
 }
 
-export const Loader: React.SFC<LoaderProps> = ({ open }) => {
+export const Loader: React.FunctionComponent<LoaderProps> = ({ open }) => {
   const classes = useStyles();
 
   return (

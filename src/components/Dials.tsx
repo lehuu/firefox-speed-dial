@@ -15,13 +15,13 @@ import { arrayMove } from "react-sortable-hoc";
 import updateDialPositions from "../mutations/updateDialPositions";
 import { Loader } from "./Loader";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     justifyContent: "space-around",
     flexDirection: "column",
     paddingTop: "60px",
-    minHeight: "100%"
+    minHeight: "100%",
   },
   button: {
     paddingTop: "56.25%",
@@ -33,29 +33,29 @@ const useStyles = makeStyles(theme => ({
     opacity: 0.5,
     "&:hover": {
       opacity: 1,
-      cursor: "pointer"
-    }
+      cursor: "pointer",
+    },
   },
   icon: {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%,-50%)",
-    fontSize: 60
-  }
+    fontSize: 60,
+  },
 }));
 
 enum ContentModalType {
   None = 0,
   Edit = 1,
-  Delete = 2
+  Delete = 2,
 }
 
 interface DialProps {
   groupId: string;
 }
 
-const Dials: React.SFC<DialProps> = ({ groupId }) => {
+const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
   const classes = useStyles();
   const { dials, isLoading, error, refetch } = useDials(groupId);
   const [modalState, setModalState] = React.useState<{
@@ -82,13 +82,13 @@ const Dials: React.SFC<DialProps> = ({ groupId }) => {
   };
 
   const handleCloseModal = () => {
-    setModalState(prev => ({ ...prev, modalType: ContentModalType.None }));
+    setModalState((prev) => ({ ...prev, modalType: ContentModalType.None }));
   };
 
   const handleDelete = (dial: Dial) => {
     setModalState({
       selectedDial: dial,
-      modalType: ContentModalType.Delete
+      modalType: ContentModalType.Delete,
     });
     hide();
   };
@@ -124,11 +124,9 @@ const Dials: React.SFC<DialProps> = ({ groupId }) => {
   };
 
   const handleSortEnd = async ({ oldIndex, newIndex }) => {
-    const sortedDials = arrayMove<Dial>(
-      cachedDials,
-      oldIndex,
-      newIndex
-    ).map((el, i) => ({ ...el, position: i }));
+    const sortedDials = arrayMove<Dial>(cachedDials, oldIndex, newIndex).map(
+      (el, i) => ({ ...el, position: i })
+    );
     setCachedDials(sortedDials);
 
     const result = await updateDialPositions(sortedDials);
@@ -151,7 +149,7 @@ const Dials: React.SFC<DialProps> = ({ groupId }) => {
           >
             {cachedDials.map((dial, i) => (
               <SortableCard
-                onContextMenu={e => handleRightClick(e, dial)}
+                onContextMenu={(e) => handleRightClick(e, dial)}
                 key={dial.id}
                 index={i}
                 dial={dial}

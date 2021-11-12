@@ -3,7 +3,7 @@ import PopUp, {
   PopUpProps,
   RedButton,
   DialogContent,
-  DialogActions
+  DialogActions,
 } from "./Popup";
 import { Button, Typography } from "@material-ui/core";
 
@@ -13,13 +13,13 @@ interface ConfirmPopupProps extends Omit<PopUpProps, "children"> {
   body: string;
 }
 
-const ConfirmPopup: React.SFC<ConfirmPopupProps> = ({
+const ConfirmPopup: React.FunctionComponent<ConfirmPopupProps> = ({
   heading,
   body,
   onClose,
   open,
   onConfirm,
-  onDeny
+  onDeny,
 }) => {
   const ref = React.createRef<HTMLButtonElement>();
   ref.current?.focus();

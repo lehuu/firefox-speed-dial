@@ -21,24 +21,24 @@ import saveDefaultTab from "../mutations/saveDefaultTab";
 enum ContentModalType {
   None = 0,
   Edit = 1,
-  Delete = 2
+  Delete = 2,
 }
 
 const FlexAppBar = withStyles({
   root: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between"
-  }
+    justifyContent: "space-between",
+  },
 })(AppBar);
 
 const CreateGroupButton = withStyles({
   root: {
-    float: "right"
-  }
+    float: "right",
+  },
 })(IconButton);
 
-const Content: React.SFC<any> = () => {
+const Content: React.FunctionComponent<any> = () => {
   const { groups, isLoading, error, refetch } = useGroups();
   const { defaultTab, isLoading: defaultTabIsLoading } = useDefaultTab();
   const [modalState, setModalState] = React.useState<{
@@ -78,13 +78,13 @@ const Content: React.SFC<any> = () => {
   };
 
   const handleCloseModal = () => {
-    setModalState(prev => ({ ...prev, modalType: ContentModalType.None }));
+    setModalState((prev) => ({ ...prev, modalType: ContentModalType.None }));
   };
 
   const handleDelete = (group: Group) => {
     setModalState({
       selectedGroup: group,
-      modalType: ContentModalType.Delete
+      modalType: ContentModalType.Delete,
     });
     hide();
   };
@@ -121,11 +121,9 @@ const Content: React.SFC<any> = () => {
   };
 
   const handleSortEnd = async ({ oldIndex, newIndex }) => {
-    const sortedGroups = arrayMove<Group>(
-      cachedGroups,
-      oldIndex,
-      newIndex
-    ).map((el, i) => ({ ...el, position: i }));
+    const sortedGroups = arrayMove<Group>(cachedGroups, oldIndex, newIndex).map(
+      (el, i) => ({ ...el, position: i })
+    );
     setCachedGroups(sortedGroups);
 
     const result = await updateGroupPositions(sortedGroups);
@@ -143,7 +141,7 @@ const Content: React.SFC<any> = () => {
     <>
       <FlexAppBar position="fixed" color="default">
         <SortableTabs
-          onContextMenu={e => handleRightClick(e)}
+          onContextMenu={(e) => handleRightClick(e)}
           value={clampedSelectedTab}
           onChange={handleChange}
           distance={10}
@@ -158,7 +156,7 @@ const Content: React.SFC<any> = () => {
                 index={index}
                 tempIndex={index}
                 label={group.title}
-                onContextMenu={e => handleRightClick(e, group)}
+                onContextMenu={(e) => handleRightClick(e, group)}
               />
             );
           })}

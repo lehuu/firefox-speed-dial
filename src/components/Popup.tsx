@@ -3,7 +3,7 @@ import {
   createStyles,
   Theme,
   withStyles,
-  WithStyles
+  WithStyles,
 } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -19,14 +19,14 @@ const styles = (theme: Theme) =>
   createStyles({
     root: {
       margin: 0,
-      padding: theme.spacing(2)
+      padding: theme.spacing(2),
     },
     closeButton: {
       position: "absolute",
       right: theme.spacing(1),
       top: theme.spacing(1),
-      color: theme.palette.grey[500]
-    }
+      color: theme.palette.grey[500],
+    },
   });
 
 export interface DialogTitleProps extends WithStyles<typeof styles> {
@@ -55,22 +55,22 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
 
 export const DialogContent = withStyles((theme: Theme) => ({
   root: {
-    padding: theme.spacing(2)
-  }
-}))(props => <MuiDialogContent dividers {...props} />);
+    padding: theme.spacing(2),
+  },
+}))((props) => <MuiDialogContent dividers {...props} />);
 
 export const DialogActions = withStyles((theme: Theme) => ({
   root: {
     margin: 0,
-    padding: theme.spacing(1)
-  }
+    padding: theme.spacing(1),
+  },
 }))(MuiDialogActions);
 
 export const RedButton = withStyles({
   root: {
     color: red[600],
-    "&:hover": { color: red[800] }
-  }
+    "&:hover": { color: red[800] },
+  },
 })(Button);
 
 export interface PopUpProps {
@@ -81,12 +81,12 @@ export interface PopUpProps {
   onKeyEnter?: () => void;
 }
 
-const PopUp: React.SFC<PopUpProps> = ({
+const PopUp: React.FunctionComponent<PopUpProps> = ({
   heading,
   children,
   open,
   onClose,
-  onKeyEnter
+  onKeyEnter,
 }) => {
   const handleOnKeyEnter = (e: React.KeyboardEvent) => {
     if (!onKeyEnter) {
