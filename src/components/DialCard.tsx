@@ -63,9 +63,16 @@ export const SortableCard = SortableElement<SortableCardProps>(
   ({ dial, ...rest }: SortableCardProps) => {
     const classes = useStyles({ backgroundColor: dial.color });
     const [header, subtitle] = splitLink(dial.alias);
+
+    const http_pattern = "/^http[s]*://[w]+/i";
+    let link = dial.link;
+    if (!link.match(http_pattern)) {
+      link = `http://${link}`;
+    }
+
     return (
       <Grid {...rest} item xs={12} sm={6} md={4}>
-        <a className={classes.root} draggable={false} href={dial.link}>
+        <a className={classes.root} draggable={false} href={link}>
           <Card>
             <Box component="div" overflow="hidden" className={classes.centered}>
               <Typography
