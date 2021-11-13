@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { ChromePicker, ColorResult, SwatchesPicker } from "react-color";
+import { ColorResult, SwatchesPicker } from "react-color";
 import { makeStyles, Popover } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -21,6 +21,13 @@ const useStyles = makeStyles((theme) => ({
   }),
   popover: {
     marginTop: theme.spacing(1),
+    "& .swatches-picker": {
+      height: "unset !important",
+
+      "&> div > div": {
+        background: "#212121 !important",
+      },
+    },
   },
 }));
 
@@ -56,6 +63,7 @@ const ColorPicker: React.FunctionComponent<ColorPickerProps> = ({
       <div className={classes.swatch} onClick={handleClick}>
         <div className={classes.color} />
       </div>
+
       <Popover
         className={classes.popover}
         open={Boolean(anchorEl)}
@@ -70,7 +78,7 @@ const ColorPicker: React.FunctionComponent<ColorPickerProps> = ({
           horizontal: "left",
         }}
       >
-        <SwatchesPicker color={value} onChange={handleChange} />
+        <SwatchesPicker width={290} color={value} onChange={handleChange} />
       </Popover>
     </div>
   );
