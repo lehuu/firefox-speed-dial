@@ -2,8 +2,9 @@ import * as React from "react";
 import { makeStyles, Card, Typography, Box, Grid } from "@material-ui/core";
 import convertHexToRGB from "../utils/convertHexToRGB";
 import { SortableElement, SortableContainer } from "react-sortable-hoc";
+import { Dial } from "../types";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: (props: { backgroundColor: string }) => {
     const rgb = convertHexToRGB(props.backgroundColor);
 
@@ -21,14 +22,14 @@ const useStyles = makeStyles(theme => ({
         paddingTop: "56.25%",
         position: "relative",
         transition: "background-color .15s linear",
-        backgroundColor: bgColor
+        backgroundColor: bgColor,
       },
       "&:hover >.MuiCard-root": {
-        backgroundColor: hoverBgColor
+        backgroundColor: hoverBgColor,
       },
       "& *": {
-        pointerEvents: "none"
-      }
+        pointerEvents: "none",
+      },
     };
   },
   centered: {
@@ -37,59 +38,72 @@ const useStyles = makeStyles(theme => ({
     top: "50%",
     left: "50%",
     transform: "translate(-50%,-50%)",
-    maxWidth: "100%"
+    maxWidth: "100%",
   },
   header: {
     textOverflow: "ellipsis",
     pointerEvents: "none",
     overflow: "hidden",
-    userSelect: "none"
+    userSelect: "none",
   },
   subtitle: {
     textOverflow: "ellipsis",
     pointerEvents: "none",
     overflow: "hidden",
     textAlign: "end",
-    userSelect: "none"
-  }
+    userSelect: "none",
+  },
 }));
 
-export const SortableCard = SortableElement(({ dial, clickable, ...rest }) => {
-  const classes = useStyles({ backgroundColor: dial.color });
-  const [header, subtitle] = splitLink(dial.alias);
-  return (
-    <Grid {...rest} item xs={12} sm={6} md={4}>
-      <a className={classes.root} draggable={false} href={dial.link}>
-        <Card>
-          <Box component="div" overflow="hidden" className={classes.centered}>
-            <Typography
-              draggable={false}
-              className={classes.header}
-              variant="h3"
-            >
-              {header}
-            </Typography>
-            <Typography
-              draggable={false}
-              className={classes.subtitle}
-              variant="h6"
-            >
-              {subtitle}
-            </Typography>
-          </Box>
-        </Card>
-      </a>
-    </Grid>
-  );
-});
+interface SortableCardProps extends React.ComponentProps<typeof Grid> {
+  dial: Dial;
+}
 
-export const SortableCardContainer = SortableContainer(({ children }) => {
-  return (
-    <Grid container spacing={3}>
-      {children}
-    </Grid>
+export const SortableCard = SortableElement<SortableCardProps>(
+  ({ dial, ...rest }: SortableCardProps) => {
+    const classes = useStyles({ backgroundColor: dial.color });
+    const [header, subtitle] = splitLink(dial.alias);
+    return (
+      <Grid {...rest} item xs={12} sm={6} md={4}>
+        <a className={classes.root} draggable={false} href={dial.link}>
+          <Card>
+            <Box component="div" overflow="hidden" className={classes.centered}>
+              <Typography
+                draggable={false}
+                className={classes.header}
+                variant="h3"
+              >
+                {header}
+              </Typography>
+              <Typography
+                draggable={false}
+                className={classes.subtitle}
+                variant="h6"
+              >
+                {subtitle}
+              </Typography>
+            </Box>
+          </Card>
+        </a>
+      </Grid>
+    );
+  }
+);
+
+interface SortableCardContainerProps {
+  children?: React.ReactNode;
+}
+
+export const SortableCardContainer =
+  SortableContainer<SortableCardContainerProps>(
+    ({ children }: SortableCardContainerProps) => {
+      return (
+        <Grid container spacing={3}>
+          {children}
+        </Grid>
+      );
+    }
   );
-});
 
 const splitLink = (content: string) => {
   const result = content.split(".");

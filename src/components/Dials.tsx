@@ -123,7 +123,13 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
     );
   };
 
-  const handleSortEnd = async ({ oldIndex, newIndex }) => {
+  const handleSortEnd = async ({
+    oldIndex,
+    newIndex,
+  }: {
+    oldIndex: number;
+    newIndex: number;
+  }) => {
     const sortedDials = arrayMove<Dial>(cachedDials, oldIndex, newIndex).map(
       (el, i) => ({ ...el, position: i })
     );
@@ -143,9 +149,7 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
           <SortableCardContainer
             axis="xy"
             distance={10}
-            onSortStat
             onSortEnd={handleSortEnd}
-            useDrag
           >
             {cachedDials.map((dial, i) => (
               <SortableCard
