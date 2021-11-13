@@ -1,9 +1,9 @@
 enum UrlType {
   Link,
-  File
+  File,
 }
 
-const getLinkName = url => {
+const getLinkName = (url: string) => {
   let name = "";
   try {
     name = /:\/\/(?:www\.|)?(.*?)(?:\?|\/|$)/i.exec(url)[1].toLowerCase();
@@ -12,7 +12,7 @@ const getLinkName = url => {
   }
 };
 
-const getFileName = url => {
+const getFileName = (url: string) => {
   let name = "";
   try {
     name = /:\/\/.*\/(.*?)$/i.exec(url)[1].toLowerCase();
@@ -21,7 +21,7 @@ const getFileName = url => {
   }
 };
 
-const getType = url => {
+const getType = (url: string) => {
   if (/^(http|ftp)/i.test(url)) {
     return UrlType.Link;
   } else {
@@ -29,7 +29,7 @@ const getType = url => {
   }
 };
 
-const parseLink = url => {
+const parseLink = (url: string) => {
   const type = getType(url);
   return type === UrlType.Link ? getLinkName(url) : getFileName(url);
 };

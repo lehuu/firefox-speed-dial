@@ -38,7 +38,7 @@ const CreateGroupButton = withStyles({
   },
 })(IconButton);
 
-const Content: React.FunctionComponent<any> = () => {
+const Content: React.FunctionComponent = () => {
   const { groups, isLoading, error, refetch } = useGroups();
   const { defaultTab, isLoading: defaultTabIsLoading } = useDefaultTab();
   const [modalState, setModalState] = React.useState<{
@@ -120,7 +120,13 @@ const Content: React.FunctionComponent<any> = () => {
     );
   };
 
-  const handleSortEnd = async ({ oldIndex, newIndex }) => {
+  const handleSortEnd = async ({
+    oldIndex,
+    newIndex,
+  }: {
+    oldIndex: number;
+    newIndex: number;
+  }) => {
     const sortedGroups = arrayMove<Group>(cachedGroups, oldIndex, newIndex).map(
       (el, i) => ({ ...el, position: i })
     );
@@ -154,7 +160,7 @@ const Content: React.FunctionComponent<any> = () => {
               <SortableTab
                 key={group.id}
                 index={index}
-                tempIndex={index}
+                value={index}
                 label={group.title}
                 onContextMenu={(e) => handleRightClick(e, group)}
               />

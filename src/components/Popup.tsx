@@ -77,7 +77,6 @@ export interface PopUpProps {
   heading: string;
   open: boolean;
   onClose: () => void;
-  children?: any;
   onKeyEnter?: () => void;
 }
 
