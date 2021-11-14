@@ -1,12 +1,6 @@
 import * as React from "react";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import { Tabs, Tab, withStyles } from "@material-ui/core";
-
-const FullTabBar = withStyles({
-  root: {
-    width: "100%",
-  },
-})(Tabs);
+import { Tabs, Tab } from "@mui/material";
 
 const WrappedTab: React.FunctionComponent<React.ComponentProps<typeof Tab>> = (
   props
@@ -18,7 +12,10 @@ export const SortableTab =
 const WrappedTabBar: React.FunctionComponent<
   React.ComponentProps<typeof Tabs>
 > = (props) => (
-  <FullTabBar
+  <Tabs
+    sx={{
+      width: "100%",
+    }}
     {...props}
     indicatorColor="primary"
     textColor="primary"

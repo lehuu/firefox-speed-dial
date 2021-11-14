@@ -1,11 +1,14 @@
-import { createMuiTheme } from "@material-ui/core";
-import { blue } from "@material-ui/core/colors";
+import { blue } from "@mui/material/colors";
+import { createTheme } from "@mui/material";
 
-const Theme = createMuiTheme({
+const Theme = createTheme({
   palette: {
     primary: blue,
-    type: "dark"
-  }
+    mode: "dark",
+    background: {
+      default: "#303030",
+    },
+  },
 });
 
 export default Theme;

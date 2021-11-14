@@ -7,43 +7,13 @@ import ConfirmPopup from "./ConfirmPopup";
 import DialPopUp from "./DialPopup";
 import EditContextMenu from "./EditContextMenu";
 import NewContextMenu from "./NewContextMenu";
-import AddCircle from "@material-ui/icons/AddCircle";
+import { AddCircle } from "@mui/icons-material";
 import deleteDial from "../mutations/deleteDial";
-import { Grid, Container, makeStyles, Box, Fade } from "@material-ui/core";
+import { Grid, Container, Box, Fade } from "@mui/material";
 import { SortableCard, SortableCardContainer } from "./DialCard";
 import { arrayMove } from "react-sortable-hoc";
 import updateDialPositions from "../mutations/updateDialPositions";
 import { Loader } from "./Loader";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "space-around",
-    flexDirection: "column",
-    paddingTop: "60px",
-    minHeight: "100%",
-  },
-  button: {
-    paddingTop: "56.25%",
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    borderColor: theme.palette.text.primary,
-    borderWidth: "1px",
-    borderStyle: "dashed",
-    opacity: 0.5,
-    "&:hover": {
-      opacity: 1,
-      cursor: "pointer",
-    },
-  },
-  icon: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%,-50%)",
-    fontSize: 60,
-  },
-}));
 
 enum ContentModalType {
   None = 0,
@@ -56,7 +26,6 @@ interface DialProps {
 }
 
 const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
-  const classes = useStyles();
   const { dials, isLoading, error, refetch } = useDials(groupId);
   const [modalState, setModalState] = React.useState<{
     modalType: ContentModalType;
@@ -143,7 +112,16 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
   };
 
   return (
-    <div className={classes.root} onContextMenu={handleRightClick}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-around",
+        flexDirection: "column",
+        paddingTop: "60px",
+        minHeight: "100%",
+      }}
+      onContextMenu={handleRightClick}
+    >
       <Fade in={!isLoading}>
         <Container>
           <SortableCardContainer
@@ -162,9 +140,31 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
             <Grid item xs={12} sm={6} md={4}>
               <Box
                 onClick={() => handleShowEditModal()}
-                className={classes.button}
+                role="button"
+                sx={{
+                  paddingTop: "56.25%",
+                  position: "relative",
+                  borderRadius: (theme) => theme.shape.borderRadius,
+                  borderColor: (theme) => theme.palette.text.primary,
+                  borderWidth: "1px",
+                  borderStyle: "dashed",
+                  opacity: 0.5,
+                  "&:hover": {
+                    opacity: 1,
+                    cursor: "pointer",
+                  },
+                }}
               >
-                <AddCircle className={classes.icon} />
+                <AddCircle
+                  fontSize="medium"
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%,-50%)",
+                    fontSize: 60,
+                  }}
+                />
               </Box>
             </Grid>
           </SortableCardContainer>
@@ -172,7 +172,7 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
       </Fade>
 
       <Loader open={isLoading} />
-      <div />
+      <Box />
 
       <ConfirmPopup
         onDeny={handleCloseModal}
@@ -190,7 +190,7 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
         open={modalState.modalType === ContentModalType.Edit}
         onClose={handleCloseModal}
       />
-    </div>
+    </Box>
   );
 };
 

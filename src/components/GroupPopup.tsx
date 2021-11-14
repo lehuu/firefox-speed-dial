@@ -3,11 +3,10 @@ import { useForm } from "react-hook-form";
 import PopUp, {
   PopUpProps,
   RedButton,
-  DialogContent,
-  DialogActions,
+  StyledDialogContent,
+  StyledDialogActions,
 } from "./Popup";
-import TextField from "@material-ui/core/TextField";
-import { Button } from "@material-ui/core";
+import { Button, TextField } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { Group } from "../types";
 import createGroup from "../mutations/createGroup";
@@ -66,7 +65,7 @@ const GroupPopUp: React.FunctionComponent<GroupPopUpProps> = ({
   return (
     <PopUp heading={heading} onClose={onClose} open={open}>
       <form autoComplete="off" onSubmit={handleSubmit(handleSave)}>
-        <DialogContent>
+        <StyledDialogContent>
           <TextField
             autoFocus
             fullWidth
@@ -81,13 +80,13 @@ const GroupPopUp: React.FunctionComponent<GroupPopUpProps> = ({
             variant="outlined"
             label="Title"
           />
-        </DialogContent>
-        <DialogActions>
+        </StyledDialogContent>
+        <StyledDialogActions>
           {group && <RedButton onClick={handleDelete}>Delete</RedButton>}
           <Button type="submit" color="primary">
             Save
           </Button>
-        </DialogActions>
+        </StyledDialogActions>
       </form>
     </PopUp>
   );

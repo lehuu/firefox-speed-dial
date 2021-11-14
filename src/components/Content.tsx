@@ -1,8 +1,8 @@
 import * as React from "react";
 import useGroups from "../hooks/useGroups";
 import GroupPopUp from "./GroupPopup";
-import { AppBar, IconButton, withStyles } from "@material-ui/core";
-import AddCircle from "@material-ui/icons/AddCircle";
+import { AppBar, IconButton } from "@mui/material";
+import { AddCircle } from "@mui/icons-material";
 import useContextMenu from "../hooks/useContextMenu";
 import EditContextMenu from "./EditContextMenu";
 import NewContextMenu from "./NewContextMenu";
@@ -23,20 +23,6 @@ enum ContentModalType {
   Edit = 1,
   Delete = 2,
 }
-
-const FlexAppBar = withStyles({
-  root: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-})(AppBar);
-
-const CreateGroupButton = withStyles({
-  root: {
-    float: "right",
-  },
-})(IconButton);
 
 const Content: React.FunctionComponent = () => {
   const { groups, isLoading, error, refetch } = useGroups();
@@ -145,7 +131,15 @@ const Content: React.FunctionComponent = () => {
 
   return (
     <>
-      <FlexAppBar position="fixed" color="default">
+      <AppBar
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+        position="fixed"
+        color="default"
+      >
         <SortableTabs
           onContextMenu={(e) => handleRightClick(e)}
           value={clampedSelectedTab}
@@ -168,13 +162,18 @@ const Content: React.FunctionComponent = () => {
           })}
         </SortableTabs>
 
-        <CreateGroupButton
+        <IconButton
+          sx={{
+            root: {
+              float: "right",
+            },
+          }}
           onClick={() => handleShowEditModal()}
           color="primary"
         >
-          <AddCircle fontSize="default" />
-        </CreateGroupButton>
-      </FlexAppBar>
+          <AddCircle fontSize="medium" />
+        </IconButton>
+      </AppBar>
       {cachedGroups.length > 0 && (
         <Dials groupId={cachedGroups[clampedSelectedTab].id} />
       )}

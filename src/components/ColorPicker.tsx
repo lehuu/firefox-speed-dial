@@ -1,35 +1,7 @@
 import * as React from "react";
 
 import { ColorResult, SwatchesPicker } from "react-color";
-import { makeStyles, Popover } from "@material-ui/core";
-
-const useStyles = makeStyles((theme) => ({
-  swatch: {
-    padding: theme.spacing(1),
-    borderRadius: theme.shape.borderRadius,
-    borderWidth: "1px",
-    borderColor: theme.palette.text.disabled,
-    borderStyle: "solid",
-    display: "inline-block",
-    cursor: "pointer",
-  },
-  color: (props: { backgroundColor: string }) => ({
-    width: "36px",
-    height: "14px",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: props.backgroundColor,
-  }),
-  popover: {
-    marginTop: theme.spacing(1),
-    "& .swatches-picker": {
-      height: "unset !important",
-
-      "&> div > div": {
-        background: "#212121 !important",
-      },
-    },
-  },
-}));
+import { Box, Popover, Theme } from "@mui/material";
 
 interface ColorPickerProps {
   value: string;
@@ -41,7 +13,6 @@ const ColorPicker: React.FunctionComponent<ColorPickerProps> = ({
   onChange,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
-  const classes = useStyles({ backgroundColor: value });
 
   const handleClick = (event: React.MouseEvent) => {
     setAnchorEl(event.currentTarget);
@@ -60,12 +31,39 @@ const ColorPicker: React.FunctionComponent<ColorPickerProps> = ({
 
   return (
     <div>
-      <div className={classes.swatch} onClick={handleClick}>
-        <div className={classes.color} />
-      </div>
+      <Box
+        sx={{
+          padding: (theme: Theme) => theme.spacing(1),
+          borderRadius: (theme: Theme) => theme.shape.borderRadius,
+          borderWidth: "1px",
+          borderColor: (theme: Theme) => theme.palette.text.disabled,
+          borderStyle: "solid",
+          display: "inline-block",
+          cursor: "pointer",
+        }}
+        onClick={handleClick}
+      >
+        <Box
+          sx={{
+            width: "36px",
+            height: "14px",
+            borderRadius: (theme: Theme) => theme.shape.borderRadius,
+            backgroundColor: value,
+          }}
+        />
+      </Box>
 
       <Popover
-        className={classes.popover}
+        sx={{
+          marginTop: (theme: Theme) => theme.spacing(1),
+          "& .swatches-picker": {
+            height: "unset !important",
+
+            "&> div > div": {
+              background: "#212121 !important",
+            },
+          },
+        }}
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleClose}
