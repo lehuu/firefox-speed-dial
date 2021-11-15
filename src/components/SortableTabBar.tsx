@@ -4,7 +4,7 @@ import { Tabs, Tab } from "@mui/material";
 
 const WrappedTab: React.FunctionComponent<React.ComponentProps<typeof Tab>> = (
   props
-) => <Tab style={{ zIndex: 1200 }} {...props} />;
+) => <Tab style={{ zIndex: 1200, minWidth: "160px" }} {...props} />;
 
 export const SortableTab =
   SortableElement<React.ComponentProps<typeof Tab>>(WrappedTab);

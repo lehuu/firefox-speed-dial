@@ -4,7 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { ContextMenuProvider } from "./ContextMenuProvider";
 import Content from "./Content";
 import { SnackbarProvider } from "notistack";
-import { ThemeProvider } from "@mui/system";
+import { ThemeProvider } from "@mui/material/styles";
 
 const App: React.FunctionComponent = () => {
   return (

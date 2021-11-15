@@ -31,19 +31,6 @@ export const SortableCard = SortableElement<SortableCardProps>(
         <Link
           sx={{
             whiteSpace: "nowrap",
-            "&> .MuiCard-root": {
-              display: "block",
-              paddingTop: "56.25%",
-              position: "relative",
-              transition: "background-color .15s linear",
-              backgroundColor: bgColor,
-            },
-            "&:hover >.MuiCard-root": {
-              backgroundColor: hoverBgColor,
-            },
-            "& *": {
-              pointerEvents: "none",
-            },
           }}
           draggable={false}
           href={link}
@@ -51,6 +38,14 @@ export const SortableCard = SortableElement<SortableCardProps>(
           <Card
             sx={{
               borderRadius: (theme) => theme.shape.borderRadius,
+              display: "block",
+              paddingTop: "56.25%",
+              position: "relative",
+              transition: "background-color .15s linear",
+              backgroundColor: bgColor,
+              "&:hover": {
+                backgroundColor: hoverBgColor,
+              },
             }}
           >
             <Box
