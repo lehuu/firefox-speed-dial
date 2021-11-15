@@ -5,7 +5,7 @@
   "permissions": ["storage"],
   "description": "Speed Dial replaces the new tab functionality to display saved bookmarks similar to Opera's Speed Dial",
   "chrome_url_overrides": {
-    "newtab": "dist/index.html"
+    "newtab": "index.html"
   },
 
   "browser_specific_settings": {
@@ -16,7 +16,7 @@
     }
   },
   "options_ui": {
-    "page": "dist/options.html",
+    "page": "extension/options.html",
     "open_in_tab": true
   },
   "browser_action": {
@@ -33,6 +33,6 @@
     "256": "icons/icon.svg"
   },
   "background": {
-    "scripts": ["dist/toolbar.js"]
+    "scripts": ["extension/toolbar.js"]
   }
 }
