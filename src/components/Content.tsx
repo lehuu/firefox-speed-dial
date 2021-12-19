@@ -9,7 +9,7 @@ import NewContextMenu from "./NewContextMenu";
 import ConfirmPopup from "./ConfirmPopup";
 import { useSnackbar } from "notistack";
 import { SortableTabbar, SortableTab } from "./SortableTabBar";
-import { arrayMove } from "react-sortable-hoc";
+import { arrayMoveImmutable as arrayMove } from "array-move";
 import deleteGroup from "../mutations/deleteGroup";
 import updateGroupPositions from "../mutations/updateGroupPositions";
 import { Group } from "../types";
