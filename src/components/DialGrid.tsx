@@ -96,9 +96,6 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
     { oldIndex, newIndex },
     event
   ) => {
-    console.log("stopping event");
-    event.preventDefault();
-    event.stopPropagation();
     const sortedDials = arrayMove<Dial>(cachedDials, oldIndex, newIndex).map(
       (el, i) => ({ ...el, position: i })
     );
