@@ -92,10 +92,7 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
     );
   };
 
-  const handleSortEnd: SortEndHandler = async (
-    { oldIndex, newIndex },
-    event
-  ) => {
+  const handleSortEnd: SortEndHandler = async ({ oldIndex, newIndex }) => {
     const sortedDials = arrayMove<Dial>(cachedDials, oldIndex, newIndex).map(
       (el, i) => ({ ...el, position: i })
     );
@@ -175,22 +172,27 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
       <Loader open={isLoading} />
       <Box />
 
-      <ConfirmPopup
-        onDeny={handleCloseModal}
-        onClose={handleCloseModal}
-        onConfirm={() => handleDeleteConfirm(modalState.selectedDial)}
-        open={modalState.modalType === ContentModalType.Delete}
-        heading={"Warning"}
-        body={`Are you sure you want to delete ${modalState.selectedDial?.alias}?`}
-      />
-      <DialPopUp
-        onSave={refetch}
-        heading={modalState.selectedDial ? "Edit dial" : "Create new dial"}
-        groupId={groupId}
-        dial={modalState.selectedDial}
-        open={modalState.modalType === ContentModalType.Edit}
-        onClose={handleCloseModal}
-      />
+      {modalState.modalType === ContentModalType.Delete && (
+        <ConfirmPopup
+          onDeny={handleCloseModal}
+          onClose={handleCloseModal}
+          onConfirm={() => handleDeleteConfirm(modalState.selectedDial)}
+          open={modalState.modalType === ContentModalType.Delete}
+          heading={"Warning"}
+          body={`Are you sure you want to delete ${modalState.selectedDial?.alias}?`}
+        />
+      )}
+
+      {modalState.modalType === ContentModalType.Edit && (
+        <DialPopUp
+          onSave={refetch}
+          heading={modalState.selectedDial ? "Edit dial" : "Create new dial"}
+          groupId={groupId}
+          dial={modalState.selectedDial}
+          open
+          onClose={handleCloseModal}
+        />
+      )}
     </Box>
   );
 };

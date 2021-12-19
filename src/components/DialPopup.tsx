@@ -36,8 +36,14 @@ const DialPopUp: React.FunctionComponent<DialPopUpProps> = ({
   open,
   dial,
 }) => {
-  const { handleSubmit, errors, control, getValues, setValue } =
-    useForm<FormData>();
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    getValues,
+    setValue,
+  } = useForm<FormData>();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleDelete = async () => {
@@ -63,6 +69,7 @@ const DialPopUp: React.FunctionComponent<DialPopUpProps> = ({
     }
     const url = link;
     const parsedAlias = parseLink(url);
+
     setValue("alias", parsedAlias);
   };
 
@@ -96,45 +103,38 @@ const DialPopUp: React.FunctionComponent<DialPopUpProps> = ({
       >
         <form autoComplete="off" onSubmit={handleSubmit(handleSave)}>
           <StyledDialogContent>
-            <Controller
-              as={
-                <TextField
-                  autoFocus
-                  variant="outlined"
-                  error={!!errors.link}
-                  helperText={errors.link && errors.link.message}
-                  label="Link"
-                  fullWidth
-                  onBlur={handleBlurLink}
-                />
-              }
-              rules={{
-                required: "Link is required",
-              }}
-              name="link"
-              control={control}
+            <TextField
+              {...register("link", { required: "Link is required" })}
+              autoFocus
+              variant="outlined"
+              error={!!errors.link}
+              helperText={errors.link && errors.link.message}
+              label="Link"
+              fullWidth
               defaultValue={dial?.link || ""}
-              onChange={([event]) => {
-                return { value: event.target.value };
-              }}
+              onBlur={handleBlurLink}
             />
-            <Controller
-              as={<TextField variant="outlined" label="Alias" fullWidth />}
-              name="alias"
-              control={control}
+
+            <TextField
+              {...register("alias")}
+              variant="outlined"
+              label="Alias"
+              fullWidth
               defaultValue={dial?.alias || ""}
-              onChange={([event]) => {
-                return { value: event.target.value };
-              }}
             />
+
             <Controller
-              as={ColorPicker}
+              render={({ field: { onChange, value } }) => (
+                <ColorPicker
+                  onChange={(newValue) => {
+                    onChange(newValue);
+                  }}
+                  value={value}
+                />
+              )}
               control={control}
-              onChange={([newValue]) => {
-                return { value: newValue };
-              }}
               name="color"
-              defaultValue={dial ? dial.color : getRandomColor()}
+              defaultValue={dial?.color ?? getRandomColor()}
             />
           </StyledDialogContent>
           <StyledDialogActions>

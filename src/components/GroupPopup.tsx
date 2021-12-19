@@ -29,7 +29,11 @@ const GroupPopUp: React.FunctionComponent<GroupPopUpProps> = ({
   open,
   group,
 }) => {
-  const { register, handleSubmit, errors } = useForm<FormData>();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<FormData>();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleDelete = async () => {
@@ -67,14 +71,11 @@ const GroupPopUp: React.FunctionComponent<GroupPopUpProps> = ({
       <form autoComplete="off" onSubmit={handleSubmit(handleSave)}>
         <StyledDialogContent>
           <TextField
+            {...register("title", { required: "Title is required" })}
             autoFocus
             fullWidth
             error={!!errors.title}
             helperText={errors.title && errors.title.message}
-            name="title"
-            inputRef={register({
-              required: "Title is required",
-            })}
             defaultValue={group?.title || ""}
             id="standard-basic"
             variant="outlined"

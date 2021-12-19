@@ -179,21 +179,25 @@ const Content: React.FunctionComponent = () => {
         <Dials groupId={cachedGroups[clampedSelectedTab].id} />
       )}
       <Loader open={isLoading} />
-      <ConfirmPopup
-        onDeny={handleCloseModal}
-        onClose={handleCloseModal}
-        onConfirm={() => handleDeleteConfirm(modalState.selectedGroup)}
-        open={modalState.modalType === ContentModalType.Delete}
-        heading={"Warning"}
-        body={`Are you sure you want to delete ${modalState.selectedGroup?.title}?`}
-      />
-      <GroupPopUp
-        onSave={refetch}
-        heading={modalState.selectedGroup ? "Edit group" : "Create new group"}
-        group={modalState.selectedGroup}
-        open={modalState.modalType === ContentModalType.Edit}
-        onClose={handleCloseModal}
-      />
+      {modalState.modalType === ContentModalType.Delete && (
+        <ConfirmPopup
+          onDeny={handleCloseModal}
+          onClose={handleCloseModal}
+          onConfirm={() => handleDeleteConfirm(modalState.selectedGroup)}
+          open
+          heading={"Warning"}
+          body={`Are you sure you want to delete ${modalState.selectedGroup?.title}?`}
+        />
+      )}
+      {modalState.modalType === ContentModalType.Edit && (
+        <GroupPopUp
+          onSave={refetch}
+          heading={modalState.selectedGroup ? "Edit group" : "Create new group"}
+          group={modalState.selectedGroup}
+          open
+          onClose={handleCloseModal}
+        />
+      )}
     </>
   );
 };
