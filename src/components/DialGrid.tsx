@@ -11,7 +11,8 @@ import { AddCircle } from "@mui/icons-material";
 import deleteDial from "../mutations/deleteDial";
 import { Grid, Container, Box, Fade } from "@mui/material";
 import { SortableCard, SortableCardContainer } from "./DialCard";
-import { arrayMove, SortEndHandler } from "react-sortable-hoc";
+import { SortEndHandler } from "react-sortable-hoc";
+import { arrayMoveImmutable as arrayMove } from "array-move";
 import updateDialPositions from "../mutations/updateDialPositions";
 import { Loader } from "./Loader";
 
