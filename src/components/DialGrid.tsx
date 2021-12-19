@@ -11,7 +11,7 @@ import { AddCircle } from "@mui/icons-material";
 import deleteDial from "../mutations/deleteDial";
 import { Grid, Container, Box, Fade } from "@mui/material";
 import { SortableCard, SortableCardContainer } from "./DialCard";
-import { arrayMove } from "react-sortable-hoc";
+import { arrayMove, SortEndHandler } from "react-sortable-hoc";
 import updateDialPositions from "../mutations/updateDialPositions";
 import { Loader } from "./Loader";
 
@@ -92,13 +92,13 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
     );
   };
 
-  const handleSortEnd = async ({
-    oldIndex,
-    newIndex,
-  }: {
-    oldIndex: number;
-    newIndex: number;
-  }) => {
+  const handleSortEnd: SortEndHandler = async (
+    { oldIndex, newIndex },
+    event
+  ) => {
+    console.log("stopping event");
+    event.preventDefault();
+    event.stopPropagation();
     const sortedDials = arrayMove<Dial>(cachedDials, oldIndex, newIndex).map(
       (el, i) => ({ ...el, position: i })
     );
@@ -132,6 +132,10 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
             {cachedDials.map((dial, i) => (
               <SortableCard
                 onContextMenu={(e) => handleRightClick(e, dial)}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
                 key={dial.id}
                 index={i}
                 dial={dial}

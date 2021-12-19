@@ -13,7 +13,7 @@ import { arrayMove } from "react-sortable-hoc";
 import deleteGroup from "../mutations/deleteGroup";
 import updateGroupPositions from "../mutations/updateGroupPositions";
 import { Group } from "../types";
-import Dials from "./Dials";
+import Dials from "./DialGrid";
 import { Loader } from "./Loader";
 import useDefaultTab from "../hooks/useDefaultTab";
 import saveDefaultTab from "../mutations/saveDefaultTab";
