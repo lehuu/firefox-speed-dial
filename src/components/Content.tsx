@@ -17,6 +17,7 @@ import Dials from "./DialGrid";
 import { Loader } from "./Loader";
 import useDefaultTab from "../hooks/useDefaultTab";
 import saveDefaultTab from "../mutations/saveDefaultTab";
+import { Box } from "@mui/system";
 
 enum ContentModalType {
   None = 0,
@@ -162,17 +163,17 @@ const Content: React.FunctionComponent = () => {
           })}
         </SortableTabbar>
 
-        <IconButton
+        <Box
           sx={{
-            root: {
-              float: "right",
-            },
+            float: "right",
+            margin: "auto",
+            paddingRight: "16px",
           }}
-          onClick={() => handleShowEditModal()}
-          color="primary"
         >
-          <AddCircle fontSize="medium" />
-        </IconButton>
+          <IconButton onClick={() => handleShowEditModal()} color="primary">
+            <AddCircle fontSize="medium" />
+          </IconButton>
+        </Box>
       </AppBar>
       {cachedGroups.length > 0 && (
         <Dials groupId={cachedGroups[clampedSelectedTab].id} />
