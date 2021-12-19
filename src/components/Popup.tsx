@@ -30,7 +30,7 @@ const StyledDialogTitle: React.FunctionComponent<DialogTitleProps> = ({
       }}
       {...other}
     >
-      <Typography variant="span">{children}</Typography>
+      <span>{children}</span>
       {onClose ? (
         <IconButton
           aria-label="close"
