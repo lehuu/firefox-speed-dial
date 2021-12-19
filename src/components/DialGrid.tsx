@@ -115,9 +115,9 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "space-around",
+        justifyContent: "start",
         flexDirection: "column",
-        paddingTop: "60px",
+        paddingTop: "100px",
         minHeight: "100%",
       }}
       onContextMenu={handleRightClick}
