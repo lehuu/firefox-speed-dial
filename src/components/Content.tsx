@@ -8,7 +8,7 @@ import EditContextMenu from "./EditContextMenu";
 import NewContextMenu from "./NewContextMenu";
 import ConfirmPopup from "./ConfirmPopup";
 import { useSnackbar } from "notistack";
-import { SortableTabs, SortableTab } from "./SortableTabBar";
+import { SortableTabbar, SortableTab } from "./SortableTabBar";
 import { arrayMove } from "react-sortable-hoc";
 import deleteGroup from "../mutations/deleteGroup";
 import updateGroupPositions from "../mutations/updateGroupPositions";
@@ -49,7 +49,7 @@ const Content: React.FunctionComponent = () => {
     return Math.max(Math.min(selectedTab, cachedGroups.length - 1), 0);
   }, [selectedTab, cachedGroups.length]);
 
-  const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
+  const handleTabClick = (newValue: number) => {
     setSelectedTab(newValue);
     saveDefaultTab(newValue);
   };
@@ -140,10 +140,9 @@ const Content: React.FunctionComponent = () => {
         position="fixed"
         color="default"
       >
-        <SortableTabs
+        <SortableTabbar
           onContextMenu={(e) => handleRightClick(e)}
           value={clampedSelectedTab}
-          onChange={handleChange}
           distance={10}
           onSortEnd={handleSortEnd}
           lockAxis="x"
@@ -155,12 +154,13 @@ const Content: React.FunctionComponent = () => {
                 key={group.id}
                 index={index}
                 value={index}
+                onClick={handleTabClick}
                 label={group.title}
                 onContextMenu={(e) => handleRightClick(e, group)}
               />
             );
           })}
-        </SortableTabs>
+        </SortableTabbar>
 
         <IconButton
           sx={{

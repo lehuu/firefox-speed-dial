@@ -1,13 +1,48 @@
 import * as React from "react";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import { Tabs, Tab } from "@mui/material";
+import { Tabs, Box } from "@mui/material";
 
-const WrappedTab: React.FunctionComponent<React.ComponentProps<typeof Tab>> = (
-  props
-) => <Tab style={{ zIndex: 1200, minWidth: "160px" }} {...props} />;
+interface WrappedTabProps {
+  label: string;
+  value: number;
+  onClick: (value: number) => void;
+  onContextMenu: React.MouseEventHandler<HTMLDivElement>;
+}
 
-export const SortableTab =
-  SortableElement<React.ComponentProps<typeof Tab>>(WrappedTab);
+const WrappedTab: React.FunctionComponent<WrappedTabProps> = ({
+  label,
+  onClick,
+  value,
+  onContextMenu,
+}) => (
+  <Box
+    tabIndex={value}
+    role="tab"
+    sx={{
+      zIndex: 1200,
+      minWidth: "160px",
+      height: "100%",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      cursor: "pointer",
+      opacity: 0.7,
+      userSelect: "none",
+      textTransform: "capitalize",
+      padding: "6px 12px",
+      flex: "0 0 auto",
+      textAlign: "center",
+    }}
+    onClick={() => {
+      onClick(value);
+    }}
+    onContextMenu={onContextMenu}
+  >
+    {label}
+  </Box>
+);
+
+export const SortableTab = SortableElement<WrappedTabProps>(WrappedTab);
 
 const WrappedTabBar: React.FunctionComponent<
   React.ComponentProps<typeof Tabs>
@@ -15,6 +50,9 @@ const WrappedTabBar: React.FunctionComponent<
   <Tabs
     sx={{
       width: "100%",
+      "& .MuiTabs-flexContainer": {
+        height: "100%",
+      },
     }}
     {...props}
     indicatorColor="primary"
@@ -25,5 +63,5 @@ const WrappedTabBar: React.FunctionComponent<
   />
 );
 
-export const SortableTabs =
+export const SortableTabbar =
   SortableContainer<React.ComponentProps<typeof Tabs>>(WrappedTabBar);
