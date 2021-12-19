@@ -1,92 +1,103 @@
 import * as React from "react";
 import {
-  createStyles,
-  Theme,
-  withStyles,
-  WithStyles
-} from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import Typography from "@material-ui/core/Typography";
-import { red } from "@material-ui/core/colors";
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import { Close } from "@mui/icons-material";
+import { red } from "@mui/material/colors";
 
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      margin: 0,
-      padding: theme.spacing(2)
-    },
-    closeButton: {
-      position: "absolute",
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500]
-    }
-  });
-
-export interface DialogTitleProps extends WithStyles<typeof styles> {
+export interface DialogTitleProps
+  extends React.ComponentProps<typeof DialogTitle> {
   id: string;
-  children: React.ReactNode;
   onClose: () => void;
 }
 
-const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
-  const { children, classes, onClose, ...other } = props;
+const StyledDialogTitle: React.FunctionComponent<DialogTitleProps> = ({
+  children,
+  onClose,
+  ...other
+}) => {
   return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
+    <DialogTitle
+      sx={{
+        margin: 0,
+        padding: (theme) => theme.spacing(2),
+      }}
+      {...other}
+    >
+      <span>{children}</span>
       {onClose ? (
         <IconButton
           aria-label="close"
-          className={classes.closeButton}
+          sx={{
+            position: "absolute",
+            right: (theme) => theme.spacing(1),
+            top: (theme) => theme.spacing(1),
+            color: (theme) => theme.palette.grey[500],
+          }}
           onClick={onClose}
         >
-          <CloseIcon />
+          <Close />
         </IconButton>
       ) : null}
-    </MuiDialogTitle>
+    </DialogTitle>
   );
-});
+};
 
-export const DialogContent = withStyles((theme: Theme) => ({
-  root: {
-    padding: theme.spacing(2)
-  }
-}))(props => <MuiDialogContent dividers {...props} />);
+export const StyledDialogContent: React.FunctionComponent<
+  React.ComponentProps<typeof DialogContent>
+> = (props) => (
+  <DialogContent
+    dividers
+    sx={{
+      padding: (theme) => theme.spacing(2),
+    }}
+    {...props}
+  />
+);
 
-export const DialogActions = withStyles((theme: Theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1)
-  }
-}))(MuiDialogActions);
+export const StyledDialogActions: React.FunctionComponent<
+  React.ComponentProps<typeof DialogActions>
+> = (props) => (
+  <DialogActions
+    sx={{
+      margin: 0,
+      padding: (theme) => theme.spacing(1),
+    }}
+    {...props}
+  />
+);
 
-export const RedButton = withStyles({
-  root: {
-    color: red[600],
-    "&:hover": { color: red[800] }
-  }
-})(Button);
+export const RedButton: React.FunctionComponent<
+  React.ComponentProps<typeof Button>
+> = (props) => (
+  <Button
+    sx={{
+      color: red[600],
+      "&:hover": { color: red[800] },
+    }}
+    {...props}
+  />
+);
 
 export interface PopUpProps {
   heading: string;
   open: boolean;
   onClose: () => void;
-  children?: any;
   onKeyEnter?: () => void;
 }
 
-const PopUp: React.SFC<PopUpProps> = ({
+const PopUp: React.FunctionComponent<PopUpProps> = ({
   heading,
   children,
   open,
   onClose,
-  onKeyEnter
+  onKeyEnter,
 }) => {
   const handleOnKeyEnter = (e: React.KeyboardEvent) => {
     if (!onKeyEnter) {
@@ -104,9 +115,9 @@ const PopUp: React.SFC<PopUpProps> = ({
       open={open}
       onKeyUp={handleOnKeyEnter}
     >
-      <DialogTitle id="customized-dialog-title" onClose={onClose}>
+      <StyledDialogTitle id="customized-dialog-title" onClose={onClose}>
         {heading}
-      </DialogTitle>
+      </StyledDialogTitle>
       {children}
     </Dialog>
   );

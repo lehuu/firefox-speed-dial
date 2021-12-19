@@ -3,11 +3,10 @@ import { useForm, Controller } from "react-hook-form";
 import PopUp, {
   PopUpProps,
   RedButton,
-  DialogContent,
-  DialogActions
+  StyledDialogContent,
+  StyledDialogActions,
 } from "./Popup";
-import TextField from "@material-ui/core/TextField";
-import { Button, makeStyles } from "@material-ui/core";
+import { TextField, Button, Box } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { Dial } from "../types";
 import createDial from "../mutations/createDial";
@@ -16,14 +15,6 @@ import deleteDial from "../mutations/deleteDial";
 import ColorPicker from "./ColorPicker";
 import parseLink from "../utils/parseLink";
 import getRandomColor from "../utils/getRandomColor";
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    "& .MuiTextField-root": {
-      marginBottom: theme.spacing(2)
-    }
-  }
-}));
 
 type FormData = {
   link: string;
@@ -37,22 +28,21 @@ interface DialPopUpProps extends Omit<PopUpProps, "children"> {
   onSave: () => void;
 }
 
-const DialPopUp: React.SFC<DialPopUpProps> = ({
+const DialPopUp: React.FunctionComponent<DialPopUpProps> = ({
   heading,
   onClose,
   onSave,
   groupId,
   open,
-  dial
+  dial,
 }) => {
-  const classes = useStyles();
   const {
     register,
     handleSubmit,
-    errors,
     control,
+    formState: { errors },
     getValues,
-    setValue
+    setValue,
   } = useForm<FormData>();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -63,7 +53,7 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
     const result = await deleteDial(dial);
     if (result.error) {
       enqueueSnackbar(`Error deleting dial: ${result.error.name}`, {
-        variant: "error"
+        variant: "error",
       });
       return;
     }
@@ -79,6 +69,7 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
     }
     const url = link;
     const parsedAlias = parseLink(url);
+
     setValue("alias", parsedAlias);
   };
 
@@ -92,7 +83,7 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
 
     if (result.error) {
       enqueueSnackbar(`Error saving dial: ${result.error.name}`, {
-        variant: "error"
+        variant: "error",
       });
     } else {
       enqueueSnackbar("Dial saved", { variant: "success" });
@@ -103,60 +94,57 @@ const DialPopUp: React.SFC<DialPopUpProps> = ({
 
   return (
     <PopUp heading={heading} onClose={onClose} open={open}>
-      <form
-        className={classes.root}
-        autoComplete="off"
-        onSubmit={handleSubmit(handleSave)}
+      <Box
+        sx={{
+          "& .MuiTextField-root": {
+            marginBottom: (theme) => theme.spacing(2),
+          },
+        }}
       >
-        <DialogContent>
-          <Controller
-            as={
-              <TextField
-                autoFocus
-                variant="outlined"
-                error={!!errors.link}
-                helperText={errors.link && errors.link.message}
-                label="Link"
-                fullWidth
-                onBlur={handleBlurLink}
-              />
-            }
-            rules={{
-              required: "Link is required"
-            }}
-            name="link"
-            control={control}
-            defaultValue={dial?.link || ""}
-            onChange={([event]) => {
-              return { value: event.target.value };
-            }}
-          />
-          <Controller
-            as={<TextField variant="outlined" label="Alias" fullWidth />}
-            name="alias"
-            control={control}
-            defaultValue={dial?.alias || ""}
-            onChange={([event]) => {
-              return { value: event.target.value };
-            }}
-          />
-          <Controller
-            as={ColorPicker}
-            control={control}
-            onChange={([newValue]) => {
-              return { value: newValue };
-            }}
-            name="color"
-            defaultValue={dial ? dial.color : getRandomColor()}
-          />
-        </DialogContent>
-        <DialogActions>
-          {dial && <RedButton onClick={handleDelete}>Delete</RedButton>}
-          <Button type="submit" color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </form>
+        <form autoComplete="off" onSubmit={handleSubmit(handleSave)}>
+          <StyledDialogContent>
+            <TextField
+              {...register("link", { required: "Link is required" })}
+              autoFocus
+              variant="outlined"
+              error={!!errors.link}
+              helperText={errors.link && errors.link.message}
+              label="Link"
+              fullWidth
+              defaultValue={dial?.link || ""}
+              onBlur={handleBlurLink}
+            />
+
+            <TextField
+              {...register("alias")}
+              variant="outlined"
+              label="Alias"
+              fullWidth
+              defaultValue={dial?.alias || ""}
+            />
+
+            <Controller
+              render={({ field: { onChange, value } }) => (
+                <ColorPicker
+                  onChange={(newValue) => {
+                    onChange(newValue);
+                  }}
+                  value={value}
+                />
+              )}
+              control={control}
+              name="color"
+              defaultValue={dial?.color ?? getRandomColor()}
+            />
+          </StyledDialogContent>
+          <StyledDialogActions>
+            {dial && <RedButton onClick={handleDelete}>Delete</RedButton>}
+            <Button type="submit" color="primary">
+              Save
+            </Button>
+          </StyledDialogActions>
+        </form>
+      </Box>
     </PopUp>
   );
 };

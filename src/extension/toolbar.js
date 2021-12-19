@@ -1,8 +1,8 @@
-const homeURL = browser.runtime.getURL("dist/index.html");
+const homeURL = browser.runtime.getURL("index.html");
 
 function openPage() {
   browser.tabs.update({
-    url: homeURL
+    url: homeURL,
   });
 }
 

@@ -2,7 +2,7 @@ import "./options.css";
 
 function init() {
   const urlDiv = document.querySelector("#homepage-url");
-  const homeURL = browser.runtime.getURL("dist/index.html");
+  const homeURL = browser.runtime.getURL("index.html");
   urlDiv.innerHTML = `<a href="${homeURL}">${homeURL}</a>`;
 
   const versionDiv = document.querySelector("#version-id");

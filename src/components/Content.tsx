@@ -1,44 +1,31 @@
 import * as React from "react";
 import useGroups from "../hooks/useGroups";
 import GroupPopUp from "./GroupPopup";
-import { AppBar, IconButton, withStyles } from "@material-ui/core";
-import AddCircle from "@material-ui/icons/AddCircle";
+import { AppBar, IconButton } from "@mui/material";
+import { AddCircle } from "@mui/icons-material";
 import useContextMenu from "../hooks/useContextMenu";
 import EditContextMenu from "./EditContextMenu";
 import NewContextMenu from "./NewContextMenu";
 import ConfirmPopup from "./ConfirmPopup";
 import { useSnackbar } from "notistack";
-import { SortableTabs, SortableTab } from "./SortableTabBar";
+import { SortableTabbar, SortableTab } from "./SortableTabBar";
 import { arrayMove } from "react-sortable-hoc";
 import deleteGroup from "../mutations/deleteGroup";
 import updateGroupPositions from "../mutations/updateGroupPositions";
 import { Group } from "../types";
-import Dials from "./Dials";
+import Dials from "./DialGrid";
 import { Loader } from "./Loader";
 import useDefaultTab from "../hooks/useDefaultTab";
 import saveDefaultTab from "../mutations/saveDefaultTab";
+import { Box } from "@mui/system";
 
 enum ContentModalType {
   None = 0,
   Edit = 1,
-  Delete = 2
+  Delete = 2,
 }
 
-const FlexAppBar = withStyles({
-  root: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  }
-})(AppBar);
-
-const CreateGroupButton = withStyles({
-  root: {
-    float: "right"
-  }
-})(IconButton);
-
-const Content: React.SFC<any> = () => {
+const Content: React.FunctionComponent = () => {
   const { groups, isLoading, error, refetch } = useGroups();
   const { defaultTab, isLoading: defaultTabIsLoading } = useDefaultTab();
   const [modalState, setModalState] = React.useState<{
@@ -63,7 +50,7 @@ const Content: React.SFC<any> = () => {
     return Math.max(Math.min(selectedTab, cachedGroups.length - 1), 0);
   }, [selectedTab, cachedGroups.length]);
 
-  const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
+  const handleTabClick = (newValue: number) => {
     setSelectedTab(newValue);
     saveDefaultTab(newValue);
   };
@@ -78,13 +65,13 @@ const Content: React.SFC<any> = () => {
   };
 
   const handleCloseModal = () => {
-    setModalState(prev => ({ ...prev, modalType: ContentModalType.None }));
+    setModalState((prev) => ({ ...prev, modalType: ContentModalType.None }));
   };
 
   const handleDelete = (group: Group) => {
     setModalState({
       selectedGroup: group,
-      modalType: ContentModalType.Delete
+      modalType: ContentModalType.Delete,
     });
     hide();
   };
@@ -120,12 +107,16 @@ const Content: React.SFC<any> = () => {
     );
   };
 
-  const handleSortEnd = async ({ oldIndex, newIndex }) => {
-    const sortedGroups = arrayMove<Group>(
-      cachedGroups,
-      oldIndex,
-      newIndex
-    ).map((el, i) => ({ ...el, position: i }));
+  const handleSortEnd = async ({
+    oldIndex,
+    newIndex,
+  }: {
+    oldIndex: number;
+    newIndex: number;
+  }) => {
+    const sortedGroups = arrayMove<Group>(cachedGroups, oldIndex, newIndex).map(
+      (el, i) => ({ ...el, position: i })
+    );
     setCachedGroups(sortedGroups);
 
     const result = await updateGroupPositions(sortedGroups);
@@ -141,11 +132,18 @@ const Content: React.SFC<any> = () => {
 
   return (
     <>
-      <FlexAppBar position="fixed" color="default">
-        <SortableTabs
-          onContextMenu={e => handleRightClick(e)}
+      <AppBar
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+        position="fixed"
+        color="default"
+      >
+        <SortableTabbar
+          onContextMenu={(e) => handleRightClick(e)}
           value={clampedSelectedTab}
-          onChange={handleChange}
           distance={10}
           onSortEnd={handleSortEnd}
           lockAxis="x"
@@ -156,40 +154,50 @@ const Content: React.SFC<any> = () => {
               <SortableTab
                 key={group.id}
                 index={index}
-                tempIndex={index}
+                value={index}
+                onClick={handleTabClick}
                 label={group.title}
-                onContextMenu={e => handleRightClick(e, group)}
+                onContextMenu={(e) => handleRightClick(e, group)}
               />
             );
           })}
-        </SortableTabs>
+        </SortableTabbar>
 
-        <CreateGroupButton
-          onClick={() => handleShowEditModal()}
-          color="primary"
+        <Box
+          sx={{
+            float: "right",
+            margin: "auto",
+            paddingRight: "16px",
+          }}
         >
-          <AddCircle fontSize="default" />
-        </CreateGroupButton>
-      </FlexAppBar>
+          <IconButton onClick={() => handleShowEditModal()} color="primary">
+            <AddCircle fontSize="medium" />
+          </IconButton>
+        </Box>
+      </AppBar>
       {cachedGroups.length > 0 && (
         <Dials groupId={cachedGroups[clampedSelectedTab].id} />
       )}
       <Loader open={isLoading} />
-      <ConfirmPopup
-        onDeny={handleCloseModal}
-        onClose={handleCloseModal}
-        onConfirm={() => handleDeleteConfirm(modalState.selectedGroup)}
-        open={modalState.modalType === ContentModalType.Delete}
-        heading={"Warning"}
-        body={`Are you sure you want to delete ${modalState.selectedGroup?.title}?`}
-      />
-      <GroupPopUp
-        onSave={refetch}
-        heading={modalState.selectedGroup ? "Edit group" : "Create new group"}
-        group={modalState.selectedGroup}
-        open={modalState.modalType === ContentModalType.Edit}
-        onClose={handleCloseModal}
-      />
+      {modalState.modalType === ContentModalType.Delete && (
+        <ConfirmPopup
+          onDeny={handleCloseModal}
+          onClose={handleCloseModal}
+          onConfirm={() => handleDeleteConfirm(modalState.selectedGroup)}
+          open
+          heading={"Warning"}
+          body={`Are you sure you want to delete ${modalState.selectedGroup?.title}?`}
+        />
+      )}
+      {modalState.modalType === ContentModalType.Edit && (
+        <GroupPopUp
+          onSave={refetch}
+          heading={modalState.selectedGroup ? "Edit group" : "Create new group"}
+          group={modalState.selectedGroup}
+          open
+          onClose={handleCloseModal}
+        />
+      )}
     </>
   );
 };

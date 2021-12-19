@@ -3,11 +3,10 @@ import { useForm } from "react-hook-form";
 import PopUp, {
   PopUpProps,
   RedButton,
-  DialogContent,
-  DialogActions
+  StyledDialogContent,
+  StyledDialogActions,
 } from "./Popup";
-import TextField from "@material-ui/core/TextField";
-import { Button } from "@material-ui/core";
+import { Button, TextField } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { Group } from "../types";
 import createGroup from "../mutations/createGroup";
@@ -23,14 +22,18 @@ interface GroupPopUpProps extends Omit<PopUpProps, "children"> {
   onSave: () => void;
 }
 
-const GroupPopUp: React.SFC<GroupPopUpProps> = ({
+const GroupPopUp: React.FunctionComponent<GroupPopUpProps> = ({
   heading,
   onClose,
   onSave,
   open,
-  group
+  group,
 }) => {
-  const { register, handleSubmit, errors } = useForm<FormData>();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<FormData>();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleDelete = async () => {
@@ -40,7 +43,7 @@ const GroupPopUp: React.SFC<GroupPopUpProps> = ({
     const result = await deleteGroup(group);
     if (result.error) {
       enqueueSnackbar(`Error deleting group: ${result.error.name}`, {
-        variant: "error"
+        variant: "error",
       });
       return;
     }
@@ -54,7 +57,7 @@ const GroupPopUp: React.SFC<GroupPopUpProps> = ({
       : await updateGroup({ ...group, title: data.title });
     if (result.error) {
       enqueueSnackbar(`Error saving group: ${result.error.name}`, {
-        variant: "error"
+        variant: "error",
       });
     } else {
       enqueueSnackbar("Group saved", { variant: "success" });
@@ -66,28 +69,25 @@ const GroupPopUp: React.SFC<GroupPopUpProps> = ({
   return (
     <PopUp heading={heading} onClose={onClose} open={open}>
       <form autoComplete="off" onSubmit={handleSubmit(handleSave)}>
-        <DialogContent>
+        <StyledDialogContent>
           <TextField
+            {...register("title", { required: "Title is required" })}
             autoFocus
             fullWidth
             error={!!errors.title}
             helperText={errors.title && errors.title.message}
-            name="title"
-            inputRef={register({
-              required: "Title is required"
-            })}
             defaultValue={group?.title || ""}
             id="standard-basic"
             variant="outlined"
             label="Title"
           />
-        </DialogContent>
-        <DialogActions>
+        </StyledDialogContent>
+        <StyledDialogActions>
           {group && <RedButton onClick={handleDelete}>Delete</RedButton>}
           <Button type="submit" color="primary">
             Save
           </Button>
-        </DialogActions>
+        </StyledDialogActions>
       </form>
     </PopUp>
   );

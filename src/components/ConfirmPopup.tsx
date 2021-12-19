@@ -2,10 +2,10 @@ import * as React from "react";
 import PopUp, {
   PopUpProps,
   RedButton,
-  DialogContent,
-  DialogActions
+  StyledDialogContent,
+  StyledDialogActions,
 } from "./Popup";
-import { Button, Typography } from "@material-ui/core";
+import { Button, Typography } from "@mui/material";
 
 interface ConfirmPopupProps extends Omit<PopUpProps, "children"> {
   onConfirm: () => void;
@@ -13,13 +13,13 @@ interface ConfirmPopupProps extends Omit<PopUpProps, "children"> {
   body: string;
 }
 
-const ConfirmPopup: React.SFC<ConfirmPopupProps> = ({
+const ConfirmPopup: React.FunctionComponent<ConfirmPopupProps> = ({
   heading,
   body,
   onClose,
   open,
   onConfirm,
-  onDeny
+  onDeny,
 }) => {
   const ref = React.createRef<HTMLButtonElement>();
   ref.current?.focus();
@@ -31,15 +31,15 @@ const ConfirmPopup: React.SFC<ConfirmPopupProps> = ({
       onClose={onClose}
       open={open}
     >
-      <DialogContent>
+      <StyledDialogContent>
         <Typography>{body}</Typography>
-      </DialogContent>
-      <DialogActions>
+      </StyledDialogContent>
+      <StyledDialogActions>
         <RedButton onClick={onDeny}>No</RedButton>
         <Button ref={ref} onClick={onConfirm} color="primary">
           Yes
         </Button>
-      </DialogActions>
+      </StyledDialogActions>
     </PopUp>
   );
 };

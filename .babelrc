@@ -1,8 +1,6 @@
 {
-  "presets": ["@babel/preset-env"],
   "plugins": [
     "transform-inline-environment-variables",
-    "@babel/plugin-proposal-class-properties",
-    "@babel/plugin-transform-react-jsx"
+    "@babel/plugin-proposal-class-properties"
   ]
 }
