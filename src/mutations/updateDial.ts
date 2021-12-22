@@ -1,16 +1,16 @@
 import { Dial, QueryResult } from "../types";
 
-const updateDial = (dial: Dial): Promise<QueryResult> => {
+const updateDial = (dial: Dial): Promise<QueryResult<Dial>> => {
   const promise = browser.storage.sync.get({ dials: [] });
   return promise
-    .then(res => {
+    .then((res) => {
       const dials = res.dials as Dial[];
-      const filteredDial = dials.filter(el => el.id != dial.id);
+      const filteredDial = dials.filter((el) => el.id != dial.id);
       filteredDial.push(dial);
       return browser.storage.sync.set({ dials: filteredDial });
     })
     .then(() => ({ data: dial }))
-    .catch(err => ({ error: err }));
+    .catch((err) => ({ error: err }));
 };
 
 export default updateDial;

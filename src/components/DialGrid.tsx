@@ -177,7 +177,10 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
         <ConfirmPopup
           onDeny={handleCloseModal}
           onClose={handleCloseModal}
-          onConfirm={() => handleDeleteConfirm(modalState.selectedDial)}
+          onConfirm={() =>
+            modalState.selectedDial &&
+            handleDeleteConfirm(modalState.selectedDial)
+          }
           open={modalState.modalType === ContentModalType.Delete}
           heading={"Warning"}
           body={`Are you sure you want to delete ${modalState.selectedDial?.alias}?`}

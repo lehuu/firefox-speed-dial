@@ -1,5 +1,9 @@
 import * as React from "react";
-import { ContextMenuWrapper, ContextMenuRef } from "./ContextMenuWrapper";
+import {
+  ContextMenuWrapper,
+  ContextMenuRef,
+  MousePosition,
+} from "./ContextMenuWrapper";
 
 export const ContextMenuContext = React.createContext<ContextMenuRef>({
   show: () => {},
@@ -14,11 +18,11 @@ export const ContextMenuProvider: React.FunctionComponent<ContextMenuProviderPro
   ({ children }) => {
     const ref = React.useRef<ContextMenuRef>(null);
 
-    const show = (clientRect: DOMRect, payload: React.ReactNode) => {
+    const show = (position: MousePosition, payload: React.ReactNode) => {
       if (!ref.current) {
         return;
       }
-      ref.current.show(clientRect, payload);
+      ref.current.show(position, payload);
     };
     const hide = () => {
       if (!ref.current) {
