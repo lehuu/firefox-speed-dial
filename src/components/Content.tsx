@@ -2,7 +2,7 @@ import * as React from "react";
 import useGroups from "../hooks/useGroups";
 import GroupPopUp from "./GroupPopup";
 import { AppBar, IconButton } from "@mui/material";
-import { AddCircle } from "@mui/icons-material";
+import { AddCircle, MoreVert } from "@mui/icons-material";
 import useContextMenu from "../hooks/useContextMenu";
 import EditContextMenu from "./EditContextMenu";
 import NewContextMenu from "./NewContextMenu";
@@ -18,6 +18,7 @@ import { Loader } from "./Loader";
 import useDefaultTab from "../hooks/useDefaultTab";
 import saveDefaultTab from "../mutations/saveDefaultTab";
 import { Box } from "@mui/system";
+import BackupContextMenu from "./BackupContextMenu";
 
 enum ContentModalType {
   None = 0,
@@ -66,6 +67,18 @@ const Content: React.FunctionComponent = () => {
 
   const handleCloseModal = () => {
     setModalState((prev) => ({ ...prev, modalType: ContentModalType.None }));
+  };
+
+  const handleSettingsClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const elementRect = event.currentTarget.getBoundingClientRect();
+
+    const x = elementRect.x + elementRect.width;
+    const y = elementRect.y + elementRect.height;
+
+    show({ x, y }, <BackupContextMenu />);
   };
 
   const handleDelete = (group: Group) => {
@@ -167,11 +180,22 @@ const Content: React.FunctionComponent = () => {
           sx={{
             float: "right",
             margin: "auto",
-            paddingRight: "16px",
+            paddingRight: "8px",
+            display: "flex",
           }}
         >
           <IconButton onClick={() => handleShowEditModal()} color="primary">
             <AddCircle fontSize="medium" />
+          </IconButton>
+          <IconButton
+            sx={{
+              padding: 0,
+            }}
+            disableRipple
+            onClick={(e) => handleSettingsClick(e)}
+            color="secondary"
+          >
+            <MoreVert fontSize="medium" />
           </IconButton>
         </Box>
       </AppBar>
