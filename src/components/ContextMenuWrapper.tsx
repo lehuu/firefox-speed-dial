@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useMeasure, useClickAway } from "react-use";
 
-interface MousePosition {
+export interface MousePosition {
   x: number;
   y: number;
 }
@@ -28,16 +28,16 @@ export const ContextMenuWrapper = React.forwardRef<
     show: (mousePosition, clientPayload) => {
       setState({
         position: mousePosition,
-        payload: clientPayload
+        payload: clientPayload,
       });
     },
     hide: () => {
-      setState(prev => ({ ...prev, position: null }));
-    }
+      setState((prev) => ({ ...prev, position: null }));
+    },
   }));
 
   useClickAway(clickRef, () => {
-    setState(prev => ({ ...prev, position: null }));
+    setState((prev) => ({ ...prev, position: null }));
   });
 
   const style: React.CSSProperties = { position: "absolute", zIndex: 3000 };

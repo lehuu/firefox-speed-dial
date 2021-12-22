@@ -183,7 +183,10 @@ const Content: React.FunctionComponent = () => {
         <ConfirmPopup
           onDeny={handleCloseModal}
           onClose={handleCloseModal}
-          onConfirm={() => handleDeleteConfirm(modalState.selectedGroup)}
+          onConfirm={() =>
+            modalState.selectedGroup &&
+            handleDeleteConfirm(modalState.selectedGroup)
+          }
           open
           heading={"Warning"}
           body={`Are you sure you want to delete ${modalState.selectedGroup?.title}?`}

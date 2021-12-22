@@ -35,7 +35,7 @@
     "build:webext": "web-ext build -s src --overwrite-dest",
     "watch:parcel": "parcel watch src/manifest.json --no-autoinstall --no-hmr",
     "watch:webext": "web-ext run --source-dir ./dist/",
-    "build": "run-s clean build:parcel build:webext",
+    "build": "tsc && run-s clean build:parcel build:webext",
     "develop": "npm-run-all clean build:parcel -plr watch:parcel watch:webext"
   },
   "devDependencies": {
