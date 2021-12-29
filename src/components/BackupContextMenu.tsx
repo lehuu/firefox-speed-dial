@@ -8,12 +8,20 @@ import {
 } from "@mui/material";
 import { CloudUpload, CloudDownload } from "@mui/icons-material";
 import useContextMenu from "../hooks/useContextMenu";
+import useSyncStorage from "../hooks/useSyncStorage";
 
 interface BackupContextMenuProps {}
 
 const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
   () => {
     const { hide } = useContextMenu();
+    const { data } = useSyncStorage();
+
+    const downloadString = React.useMemo(() => {
+      return `data:text/json;charset=utf-8,${encodeURIComponent(
+        JSON.stringify(data)
+      )}`;
+    }, [data]);
 
     const handleBackupClick = () => {
       hide();
@@ -36,7 +44,18 @@ const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
           }}
           onClick={handleBackupClick}
         >
-          <Link href="www.google.com">
+          <Link
+            href={downloadString}
+            download="speed-dial.json"
+            sx={{
+              color: "inherit",
+              display: "inherit",
+
+              "&:hover": {
+                textDecoration: "inherit",
+              },
+            }}
+          >
             <ListItemIcon>
               <CloudDownload fontSize="small" />
             </ListItemIcon>
