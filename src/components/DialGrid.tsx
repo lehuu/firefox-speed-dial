@@ -27,7 +27,7 @@ interface DialProps {
 }
 
 const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
-  const { dials, isLoading, error, refetch } = useDials(groupId);
+  const { dials, isLoading, error } = useDials(groupId);
   const [modalState, setModalState] = React.useState<{
     modalType: ContentModalType;
     selectedDial?: Dial;
@@ -70,7 +70,6 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
       return;
     }
     enqueueSnackbar("Dial deleted", { variant: "success" });
-    refetch();
     handleCloseModal();
   };
 
@@ -181,7 +180,7 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
             modalState.selectedDial &&
             handleDeleteConfirm(modalState.selectedDial)
           }
-          open={modalState.modalType === ContentModalType.Delete}
+          open
           heading={"Warning"}
           body={`Are you sure you want to delete ${modalState.selectedDial?.alias}?`}
         />
@@ -189,7 +188,6 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
 
       {modalState.modalType === ContentModalType.Edit && (
         <DialPopUp
-          onSave={refetch}
           heading={modalState.selectedDial ? "Edit dial" : "Create new dial"}
           groupId={groupId}
           dial={modalState.selectedDial}

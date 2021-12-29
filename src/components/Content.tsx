@@ -27,7 +27,7 @@ enum ContentModalType {
 }
 
 const Content: React.FunctionComponent = () => {
-  const { groups, isLoading, error, refetch } = useGroups();
+  const { groups, isLoading, error } = useGroups();
   const { defaultTab, isLoading: defaultTabIsLoading } = useDefaultTab();
   const [modalState, setModalState] = React.useState<{
     modalType: ContentModalType;
@@ -97,7 +97,6 @@ const Content: React.FunctionComponent = () => {
       return;
     }
     enqueueSnackbar("Group deleted", { variant: "success" });
-    refetch();
     handleCloseModal();
   };
 
@@ -218,7 +217,6 @@ const Content: React.FunctionComponent = () => {
       )}
       {modalState.modalType === ContentModalType.Edit && (
         <GroupPopUp
-          onSave={refetch}
           heading={modalState.selectedGroup ? "Edit group" : "Create new group"}
           group={modalState.selectedGroup}
           open

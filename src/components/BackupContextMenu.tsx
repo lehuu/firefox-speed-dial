@@ -1,11 +1,28 @@
 import * as React from "react";
-import { Paper, ListItemIcon, MenuItem, ListItemText } from "@mui/material";
+import {
+  Paper,
+  ListItemIcon,
+  MenuItem,
+  ListItemText,
+  Link,
+} from "@mui/material";
 import { CloudUpload, CloudDownload } from "@mui/icons-material";
+import useContextMenu from "../hooks/useContextMenu";
 
 interface BackupContextMenuProps {}
 
 const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
-  ({}) => {
+  () => {
+    const { hide } = useContextMenu();
+
+    const handleBackupClick = () => {
+      hide();
+    };
+
+    const handleRestoreClick = () => {
+      hide();
+    };
+
     return (
       <Paper>
         <MenuItem
@@ -17,11 +34,14 @@ const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
               },
             },
           }}
+          onClick={handleBackupClick}
         >
-          <ListItemIcon>
-            <CloudDownload fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary={"Backup Dials"} />
+          <Link href="www.google.com">
+            <ListItemIcon>
+              <CloudDownload fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary={"Backup Dials"} />
+          </Link>
         </MenuItem>
         <MenuItem
           sx={{
@@ -32,6 +52,7 @@ const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
               },
             },
           }}
+          onClick={handleRestoreClick}
         >
           <ListItemIcon>
             <CloudUpload fontSize="small" />
