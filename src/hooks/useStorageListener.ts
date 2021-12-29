@@ -3,7 +3,8 @@ import { StorageType } from "../types/storageType";
 
 const useStorageListener = (
   storageType: StorageType,
-  handler: (changes: { [key: string]: browser.storage.StorageChange }) => void
+  handler: (changes: { [key: string]: browser.storage.StorageChange }) => void,
+  deps?: React.DependencyList
 ) => {
   React.useEffect(() => {
     const changeHandler: (
@@ -20,7 +21,7 @@ const useStorageListener = (
     return () => {
       browser.storage.onChanged.removeListener(changeHandler);
     };
-  }, []);
+  }, deps);
 };
 
 export default useStorageListener;

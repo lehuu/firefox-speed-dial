@@ -42,9 +42,10 @@ const Content: React.FunctionComponent = () => {
     setSelectedTab(defaultTab);
   }, [defaultTab]);
 
-  React.useMemo(() => {
-    groups.sort((a, b) => a.position - b.position);
-    setCachedGroups(groups);
+  React.useEffect(() => {
+    const groupsCopy = [...groups];
+    groupsCopy.sort((a, b) => a.position - b.position);
+    setCachedGroups(groupsCopy);
   }, [groups]);
 
   const clampedSelectedTab = React.useMemo(() => {
@@ -126,16 +127,16 @@ const Content: React.FunctionComponent = () => {
     oldIndex: number;
     newIndex: number;
   }) => {
-    const sortedGroups = arrayMove<Group>(cachedGroups, oldIndex, newIndex).map(
-      (el, i) => ({ ...el, position: i })
-    );
-    setCachedGroups(sortedGroups);
+    setCachedGroups((prev) => {
+      const sortedGroups = arrayMove<Group>(prev, oldIndex, newIndex).map(
+        (el, i) => ({ ...el, position: i })
+      );
+      updateGroupPositions(sortedGroups).catch(() => {
+        enqueueSnackbar("Error", { variant: "error" });
+      });
 
-    const result = await updateGroupPositions(sortedGroups);
-    if (result.error) {
-      enqueueSnackbar("Error", { variant: "error" });
-      return;
-    }
+      return sortedGroups;
+    });
   };
 
   if (defaultTabIsLoading) {

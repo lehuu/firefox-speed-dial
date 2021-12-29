@@ -37,12 +37,12 @@ const reducer = (state: State, action: Action): State => {
 };
 
 const useGroups = () => {
-  const [{ groups, isLoading, error }, dispatch] = React.useReducer(reducer, {
+  const [state, dispatch] = React.useReducer(reducer, {
     groups: [],
     isLoading: true,
   });
 
-  const refetch = () => {
+  const refetch = React.useCallback(() => {
     dispatch({ type: "Load" });
     const promise = browser.storage.sync.get({ groups: [] });
     return promise
@@ -52,17 +52,19 @@ const useGroups = () => {
       .catch((err) => {
         dispatch({ type: "Error", payload: err as Error });
       });
-  };
+  }, []);
 
   React.useEffect(() => {
     refetch();
   }, []);
 
-  useStorageListener(StorageType.SYNC, () => {
-    refetch();
+  useStorageListener(StorageType.SYNC, (changed) => {
+    if ("groups" in changed) {
+      dispatch({ type: "Done", payload: changed.groups.newValue });
+    }
   });
 
-  return { groups, isLoading, error, refetch };
+  return React.useMemo(() => ({ ...state, refetch }), [state, refetch]);
 };
 
 export default useGroups;

@@ -34,9 +34,10 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
   }>({ modalType: ContentModalType.None });
   const [cachedDials, setCachedDials] = React.useState(dials);
 
-  React.useMemo(() => {
-    dials.sort((a, b) => a.position - b.position);
-    setCachedDials(dials);
+  React.useEffect(() => {
+    const dialsCopy = [...dials];
+    dialsCopy.sort((a, b) => a.position - b.position);
+    setCachedDials(dialsCopy);
   }, [dials]);
 
   const { show, hide } = useContextMenu();
@@ -93,16 +94,16 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
   };
 
   const handleSortEnd: SortEndHandler = async ({ oldIndex, newIndex }) => {
-    const sortedDials = arrayMove<Dial>(cachedDials, oldIndex, newIndex).map(
-      (el, i) => ({ ...el, position: i })
-    );
-    setCachedDials(sortedDials);
+    setCachedDials((prev) => {
+      const sortedDials = arrayMove<Dial>(prev, oldIndex, newIndex).map(
+        (el, i) => ({ ...el, position: i })
+      );
+      updateDialPositions(sortedDials).catch(() => {
+        enqueueSnackbar("Error", { variant: "error" });
+      });
 
-    const result = await updateDialPositions(sortedDials);
-    if (result.error) {
-      enqueueSnackbar("Error", { variant: "error" });
-      return;
-    }
+      return sortedDials;
+    });
   };
 
   return (
@@ -169,7 +170,7 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
         </Container>
       </Fade>
 
-      <Loader open={isLoading} />
+      <Loader open={isLoading && dials.length === 0} />
       <Box />
 
       {modalState.modalType === ContentModalType.Delete && (
