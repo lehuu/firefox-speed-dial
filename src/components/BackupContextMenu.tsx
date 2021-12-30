@@ -53,9 +53,10 @@ const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
           if (isStorageContentSchema(resultParsed)) {
             const result = await createAll(resultParsed);
             if (result.error) {
-              enqueueSnackbar(`${result.error.name} Error writing file`, {
+              enqueueSnackbar("Error writing file", {
                 variant: "error",
               });
+              console.error(result.error.message);
             }
           } else {
             enqueueSnackbar("File has an invalid structure", {
