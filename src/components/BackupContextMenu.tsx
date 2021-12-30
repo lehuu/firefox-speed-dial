@@ -130,7 +130,8 @@ const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
           />
         </MenuItem>
         <MenuItem>
-          {Math.ceil(totalSize / MAXIMUM_STORAGE_TOTAL_SIZE)}% space filled
+          {Math.ceil((totalSize / MAXIMUM_STORAGE_TOTAL_SIZE) * 100)}% total
+          space used
         </MenuItem>
       </Paper>
     );
