@@ -19,7 +19,7 @@ type FormData = {
 
 interface GroupPopUpProps extends Omit<PopUpProps, "children"> {
   group?: Group;
-  onSave: () => void;
+  onSave?: () => void;
 }
 
 const GroupPopUp: React.FunctionComponent<GroupPopUpProps> = ({
@@ -49,7 +49,7 @@ const GroupPopUp: React.FunctionComponent<GroupPopUpProps> = ({
     }
     enqueueSnackbar("Group deleted", { variant: "success" });
     onClose();
-    onSave();
+    onSave && onSave();
   };
   const handleSave = async (data: FormData) => {
     const result = !group
@@ -62,7 +62,7 @@ const GroupPopUp: React.FunctionComponent<GroupPopUpProps> = ({
     } else {
       enqueueSnackbar("Group saved", { variant: "success" });
       onClose();
-      onSave();
+      onSave && onSave();
     }
   };
 

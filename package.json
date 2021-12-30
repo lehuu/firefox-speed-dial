@@ -18,6 +18,8 @@
     "@mui/material": "^5.1.0",
     "@mui/system": "^5.1.0",
     "array-move": "^4.0.0",
+    "fp-ts": "^2.11.5",
+    "io-ts": "^2.2.16",
     "notistack": "^2.0.3",
     "psl": "^1.8.0",
     "react": "^17.0.2",
