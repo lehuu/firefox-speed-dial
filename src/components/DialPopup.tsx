@@ -55,6 +55,7 @@ const DialPopUp: React.FunctionComponent<DialPopUpProps> = ({
       enqueueSnackbar(`Error deleting dial: ${result.error.name}`, {
         variant: "error",
       });
+      console.error(result.error);
       return;
     }
     enqueueSnackbar("Dial deleted", { variant: "success" });
@@ -85,6 +86,7 @@ const DialPopUp: React.FunctionComponent<DialPopUpProps> = ({
       enqueueSnackbar(`Error saving dial: ${result.error.name}`, {
         variant: "error",
       });
+      console.error(result.error);
     } else {
       enqueueSnackbar("Dial saved", { variant: "success" });
       onClose();

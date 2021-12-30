@@ -4,7 +4,7 @@ import { StorageType } from "../types/storageType";
 import useStorageListener from "./useStorageListener";
 
 interface State {
-  data: { groups: Group[]; dials: Dial[] };
+  data: { size: number };
   isLoading: boolean;
   error?: Error;
 }
@@ -15,7 +15,7 @@ interface LoadAction {
 
 interface DoneAction {
   type: "Done";
-  payload: { groups: Group[]; dials: Dial[] };
+  payload: { size: number };
 }
 
 interface ErrorAction {
@@ -33,27 +33,27 @@ const reducer = (state: State, action: Action): State => {
       return { data: action.payload, isLoading: false };
     case "Error":
       return {
-        data: { groups: [], dials: [] },
+        data: { size: 0 },
         isLoading: false,
         error: action.payload,
       };
   }
 };
 
-const useSyncStorage = () => {
+const useSyncStorageSize = (key?: string) => {
   const [state, dispatch] = React.useReducer(reducer, {
-    data: { groups: [], dials: [] },
+    data: { size: 0 },
     isLoading: true,
   });
 
   const refetch = () => {
     dispatch({ type: "Load" });
-    const promise = browser.storage.sync.get();
+    const promise = browser.storage.sync.getBytesInUse(key);
     return promise
       .then((res) => {
         dispatch({
           type: "Done",
-          payload: res as { groups: Group[]; dials: Dial[] },
+          payload: { size: res },
         });
       })
       .catch((err) => {
@@ -63,13 +63,17 @@ const useSyncStorage = () => {
 
   React.useEffect(() => {
     refetch();
-  }, []);
+  }, [key]);
 
-  useStorageListener(StorageType.SYNC, () => {
-    refetch();
-  });
+  useStorageListener(
+    StorageType.SYNC,
+    () => {
+      refetch();
+    },
+    [key]
+  );
 
   return state;
 };
 
-export default useSyncStorage;
+export default useSyncStorageSize;

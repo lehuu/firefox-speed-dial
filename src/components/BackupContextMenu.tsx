@@ -9,7 +9,8 @@ import {
 import { FileUpload, Download } from "@mui/icons-material";
 import useContextMenu from "../hooks/useContextMenu";
 import useSyncStorage from "../hooks/useSyncStorage";
-import { isStorageContentSchema } from "../types";
+import useSyncStorageSize from "../hooks/useSyncStorageSize";
+import { isStorageContentSchema, MAXIMUM_STORAGE_TOTAL_SIZE } from "../types";
 import createAll from "../mutations/createAll";
 import { useSnackbar } from "notistack";
 
@@ -20,6 +21,9 @@ const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
     const inputFileRef = React.useRef<HTMLInputElement>(null);
     const { hide } = useContextMenu();
     const { data } = useSyncStorage();
+    const {
+      data: { size: totalSize },
+    } = useSyncStorageSize();
     const { enqueueSnackbar } = useSnackbar();
 
     const downloadString = React.useMemo(() => {
@@ -117,14 +121,17 @@ const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
             <FileUpload fontSize="small" />
           </ListItemIcon>
           <ListItemText primary={"Restore Dials"} />
+          <input
+            onChange={handleFileSelect}
+            type="file"
+            accept=".json"
+            ref={inputFileRef}
+            style={{ display: "none" }}
+          />
         </MenuItem>
-        <input
-          onChange={handleFileSelect}
-          type="file"
-          accept=".json"
-          ref={inputFileRef}
-          style={{ display: "none" }}
-        />
+        <MenuItem>
+          {Math.ceil(totalSize / MAXIMUM_STORAGE_TOTAL_SIZE)}% space filled
+        </MenuItem>
       </Paper>
     );
   };
