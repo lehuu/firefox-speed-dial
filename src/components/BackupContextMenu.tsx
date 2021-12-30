@@ -6,7 +6,7 @@ import {
   ListItemText,
   Link,
 } from "@mui/material";
-import { CloudUpload, CloudDownload } from "@mui/icons-material";
+import { FileUpload, Download } from "@mui/icons-material";
 import useContextMenu from "../hooks/useContextMenu";
 import useSyncStorage from "../hooks/useSyncStorage";
 import { isStorageContentSchema } from "../types";
@@ -87,7 +87,8 @@ const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
             download="speed-dial.json"
             sx={{
               color: "inherit",
-              display: "inherit",
+              display: "flex",
+              alignItems: "center",
 
               "&:hover": {
                 textDecoration: "inherit",
@@ -95,7 +96,7 @@ const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
             }}
           >
             <ListItemIcon>
-              <CloudDownload fontSize="small" />
+              <Download fontSize="small" />
             </ListItemIcon>
             <ListItemText primary={"Backup Dials"} />
           </Link>
@@ -112,7 +113,7 @@ const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
           onClick={handleRestoreClick}
         >
           <ListItemIcon>
-            <CloudUpload fontSize="small" />
+            <FileUpload fontSize="small" />
           </ListItemIcon>
           <ListItemText primary={"Restore Dials"} />
         </MenuItem>
