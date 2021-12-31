@@ -46,7 +46,7 @@
     "@parcel/config-default": "^2.0.1",
     "@parcel/config-webextension": "^2.0.1",
     "@parcel/transformer-typescript-tsc": "^2.0.1",
-    "@types/firefox-webext-browser": "^70.0.1",
+    "@types/firefox-webext-browser": "^94.0.0",
     "@types/psl": "^1.1.0",
     "@types/react": "^17.0.37",
     "@types/react-color": "^3.0.1",

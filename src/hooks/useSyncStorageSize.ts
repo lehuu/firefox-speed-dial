@@ -1,11 +1,11 @@
 import * as React from "react";
-import { Dial } from "../types";
+import { Dial, Group } from "../types";
 import { StorageType } from "../types/storageType";
 import useIsMounted from "./useIsMounted";
 import useStorageListener from "./useStorageListener";
 
 interface State {
-  dials: Dial[];
+  data: { size: number };
   isLoading: boolean;
   error?: Error;
 }
@@ -16,7 +16,7 @@ interface LoadAction {
 
 interface DoneAction {
   type: "Done";
-  payload: Dial[];
+  payload: { size: number };
 }
 
 interface ErrorAction {
@@ -29,51 +29,55 @@ type Action = LoadAction | DoneAction | ErrorAction;
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "Load":
-      return { dials: state.dials, isLoading: true };
+      return { data: state.data, isLoading: true };
     case "Done":
-      return { dials: action.payload, isLoading: false };
+      return { data: action.payload, isLoading: false };
     case "Error":
-      return { dials: [], isLoading: false, error: action.payload };
+      return {
+        data: { size: 0 },
+        isLoading: false,
+        error: action.payload,
+      };
   }
 };
 
-const useDials = (groupId: string) => {
+const useSyncStorageSize = (key?: string) => {
   const [state, dispatch] = React.useReducer(reducer, {
-    dials: [],
+    data: { size: 0 },
     isLoading: true,
   });
   const isMounted = useIsMounted();
 
-  const refetch = React.useCallback(() => {
+  const refetch = () => {
     dispatch({ type: "Load" });
-    const promise = browser.storage.sync.get({ [`dials-${groupId}`]: [] });
+    const promise = browser.storage.sync.getBytesInUse(key);
     return promise
       .then((res) => {
         if (!isMounted()) return;
-        dispatch({ type: "Done", payload: res[`dials-${groupId}`] as Dial[] });
+        dispatch({
+          type: "Done",
+          payload: { size: res },
+        });
       })
       .catch((err) => {
         if (!isMounted()) return;
         dispatch({ type: "Error", payload: err as Error });
       });
-  }, [groupId]);
+  };
 
   React.useEffect(() => {
     refetch();
-  }, [groupId]);
+  }, [key]);
 
   useStorageListener(
     StorageType.SYNC,
-    (changed) => {
-      if (`dials-${groupId}` in changed) {
-        const newValue = changed[`dials-${groupId}`].newValue;
-        dispatch({ type: "Done", payload: (newValue as Dial[]) ?? [] });
-      }
+    () => {
+      refetch();
     },
-    [groupId]
+    [key]
   );
 
-  return React.useMemo(() => ({ ...state, refetch }), [state, refetch]);
+  return state;
 };
 
-export default useDials;
+export default useSyncStorageSize;

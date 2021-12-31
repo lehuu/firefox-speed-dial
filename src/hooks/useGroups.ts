@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Group } from "../types";
 import { StorageType } from "../types/storageType";
+import useIsMounted from "./useIsMounted";
 import useStorageListener from "./useStorageListener";
 
 interface State {
@@ -41,15 +42,18 @@ const useGroups = () => {
     groups: [],
     isLoading: true,
   });
+  const isMounted = useIsMounted();
 
   const refetch = React.useCallback(() => {
     dispatch({ type: "Load" });
     const promise = browser.storage.sync.get({ groups: [] });
     return promise
       .then((res) => {
+        if (!isMounted()) return;
         dispatch({ type: "Done", payload: res.groups as Group[] });
       })
       .catch((err) => {
+        if (!isMounted()) return;
         dispatch({ type: "Error", payload: err as Error });
       });
   }, []);
@@ -58,11 +62,15 @@ const useGroups = () => {
     refetch();
   }, []);
 
-  useStorageListener(StorageType.SYNC, (changed) => {
-    if ("groups" in changed) {
-      dispatch({ type: "Done", payload: changed.groups.newValue });
-    }
-  });
+  useStorageListener(
+    StorageType.SYNC,
+    (changed) => {
+      if ("groups" in changed) {
+        dispatch({ type: "Done", payload: changed.groups.newValue ?? [] });
+      }
+    },
+    []
+  );
 
   return React.useMemo(() => ({ ...state, refetch }), [state, refetch]);
 };

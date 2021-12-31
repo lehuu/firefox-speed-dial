@@ -1,6 +1,6 @@
 import * as React from "react";
 import useDials from "../hooks/useDials";
-import { Dial } from "../types";
+import { Dial, MAXIMUM_STORAGE_ITEM_SIZE } from "../types";
 import useContextMenu from "../hooks/useContextMenu";
 import { useSnackbar } from "notistack";
 import ConfirmPopup from "./ConfirmPopup";
@@ -9,12 +9,13 @@ import EditContextMenu from "./EditContextMenu";
 import NewContextMenu from "./NewContextMenu";
 import { AddCircle } from "@mui/icons-material";
 import deleteDial from "../mutations/deleteDial";
-import { Grid, Container, Box, Fade } from "@mui/material";
+import { Grid, Container, Box, Fade, Typography } from "@mui/material";
 import { SortableCard, SortableCardContainer } from "./DialCard";
 import { SortEndHandler } from "react-sortable-hoc";
 import { arrayMoveImmutable as arrayMove } from "array-move";
 import updateDialPositions from "../mutations/updateDialPositions";
 import { Loader } from "./Loader";
+import useSyncStorageSize from "../hooks/useSyncStorageSize";
 
 enum ContentModalType {
   None = 0,
@@ -33,6 +34,9 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
     selectedDial?: Dial;
   }>({ modalType: ContentModalType.None });
   const [cachedDials, setCachedDials] = React.useState(dials);
+  const {
+    data: { size },
+  } = useSyncStorageSize(`dials-${groupId}`);
 
   React.useEffect(() => {
     const dialsCopy = [...dials];
@@ -118,7 +122,7 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
       onContextMenu={handleRightClick}
     >
       <Fade in={!isLoading}>
-        <Container>
+        <Container sx={{ marginBottom: "16px" }}>
           <SortableCardContainer
             axis="xy"
             distance={10}
@@ -154,16 +158,37 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
                   },
                 }}
               >
-                <AddCircle
-                  fontSize="medium"
+                <Box
                   sx={{
                     position: "absolute",
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%,-50%)",
-                    fontSize: 60,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    gap: "8px",
                   }}
-                />
+                >
+                  <AddCircle
+                    fontSize="medium"
+                    sx={{
+                      fontSize: 60,
+                    }}
+                  />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      width: "100%",
+                      textAlign: "center",
+                    }}
+                  >
+                    {Math.ceil((size / MAXIMUM_STORAGE_ITEM_SIZE) * 100)}% space
+                    used
+                  </Typography>
+                </Box>
               </Box>
             </Grid>
           </SortableCardContainer>

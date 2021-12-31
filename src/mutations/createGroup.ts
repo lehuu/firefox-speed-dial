@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import { Group, QueryResult } from "../types";
+import { Group, QueryResult, SCHEMA_VERSION } from "../types";
 
 const createGroup = (title: string): Promise<QueryResult<Group>> => {
   const promise = browser.storage.sync.get({ groups: [] });
@@ -14,7 +14,7 @@ const createGroup = (title: string): Promise<QueryResult<Group>> => {
       const newGroup: Group = { id: uuid(), title, position: maxPosition + 1 };
       groups.push(newGroup);
       return Promise.all([
-        browser.storage.sync.set({ groups: groups }),
+        browser.storage.sync.set({ groups: groups, version: SCHEMA_VERSION }),
         newGroup,
       ]);
     })

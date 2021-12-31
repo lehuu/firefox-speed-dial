@@ -1,4 +1,5 @@
 import * as React from "react";
+import useIsMounted from "./useIsMounted";
 
 interface State {
   defaultTab: number;
@@ -38,18 +39,22 @@ const useDefaultTab = () => {
     reducer,
     {
       defaultTab: 0,
-      isLoading: true
+      isLoading: true,
     }
   );
+
+  const isMounted = useIsMounted();
 
   const refetch = () => {
     dispatch({ type: "Load" });
     const promise = browser.storage.local.get({ defaultTab: 0 });
     return promise
-      .then(res => {
+      .then((res) => {
+        if (!isMounted()) return;
         dispatch({ type: "Done", payload: res.defaultTab as number });
       })
-      .catch(err => {
+      .catch((err) => {
+        if (!isMounted()) return;
         dispatch({ type: "Error", payload: err as Error });
       });
   };

@@ -33,6 +33,6 @@
     "256": "icons/icon.svg"
   },
   "background": {
-    "scripts": ["extension/toolbar.js"]
+    "scripts": ["extension/toolbar.ts", "extension/updateExtensionCallback.ts"]
   }
 }
