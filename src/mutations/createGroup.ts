@@ -5,7 +5,7 @@ const createGroup = (title: string): Promise<QueryResult<Group>> => {
   const promise = browser.storage.sync.get({ groups: [] });
   return promise
     .then((res) => {
-      const groups = res.groups as Group[];
+      const groups = (res.groups as Group[]) ?? [];
       const maxPosition =
         groups.length === 0
           ? -1

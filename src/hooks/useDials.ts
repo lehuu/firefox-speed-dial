@@ -50,7 +50,10 @@ const useDials = (groupId: string) => {
     return promise
       .then((res) => {
         if (!isMounted()) return;
-        dispatch({ type: "Done", payload: res[`dials-${groupId}`] as Dial[] });
+        dispatch({
+          type: "Done",
+          payload: (res[`dials-${groupId}`] as Dial[]) ?? [],
+        });
       })
       .catch((err) => {
         if (!isMounted()) return;
@@ -73,7 +76,7 @@ const useDials = (groupId: string) => {
     [groupId]
   );
 
-  return React.useMemo(() => ({ ...state, refetch }), [state, refetch]);
+  return state;
 };
 
 export default useDials;

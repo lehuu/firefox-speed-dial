@@ -10,7 +10,7 @@ const createDial = (
   const promise = browser.storage.sync.get({ [`dials-${group}`]: [] });
   return promise
     .then((res) => {
-      const dials = res[`dials-${group}`] as Dial[];
+      const dials = (res[`dials-${group}`] as Dial[]) ?? [];
       const maxPosition =
         dials.length === 0
           ? -1
