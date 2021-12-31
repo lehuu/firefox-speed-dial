@@ -21,8 +21,8 @@ export const ContextMenuWrapper = React.forwardRef<
     position: MousePosition | null;
     payload: React.ReactNode | null;
   }>({ position: null, payload: null });
-  const [containerRef, { width, height }] = useMeasure();
-  const clickRef = React.useRef(null);
+  const [containerRef, { width, height }] = useMeasure<HTMLDivElement>();
+  const clickRef = React.useRef<HTMLDivElement>(null);
 
   React.useImperativeHandle(ref, () => ({
     show: (mousePosition, clientPayload) => {
