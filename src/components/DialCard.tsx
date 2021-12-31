@@ -20,10 +20,10 @@ export const SortableCard = SortableElement<SortableCardProps>(
 
     const [header, subtitle] = splitLink(dial.alias);
 
-    const http_pattern = "/^http[s]*://[w]+/i";
+    const http_pattern = /^http[s]*:\/\/.+/i;
     let link = dial.link;
     if (!link.match(http_pattern)) {
-      link = `http://${link}`;
+      link = `https://${link}`;
     }
 
     return (
