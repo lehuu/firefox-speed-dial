@@ -50,7 +50,7 @@ const useGroups = () => {
     return promise
       .then((res) => {
         if (!isMounted()) return;
-        dispatch({ type: "Done", payload: res.groups as Group[] });
+        dispatch({ type: "Done", payload: (res.groups as Group[]) ?? [] });
       })
       .catch((err) => {
         if (!isMounted()) return;
@@ -72,7 +72,7 @@ const useGroups = () => {
     []
   );
 
-  return React.useMemo(() => ({ ...state, refetch }), [state, refetch]);
+  return state;
 };
 
 export default useGroups;
