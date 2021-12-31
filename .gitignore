@@ -5,3 +5,4 @@ dist
 .parcel-cache
 .DS_Store
 web-ext-artifacts
+.env.private

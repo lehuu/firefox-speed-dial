@@ -38,11 +38,12 @@
   "scripts": {
     "clean": "rimraf dist",
     "build:parcel": "parcel build src/manifest.json --no-cache --no-autoinstall",
-    "build:webext": "web-ext build -s src --overwrite-dest",
+    "build:webext": "web-ext build --source-dir ./dist/ --overwrite-dest",
     "watch:parcel": "parcel watch src/manifest.json --no-autoinstall --no-hmr",
     "watch:webext": "web-ext run --source-dir ./dist/",
     "build": "tsc && run-s clean build:parcel build:webext",
-    "develop": "npm-run-all clean build:parcel -plr watch:parcel watch:webext"
+    "develop": "npm-run-all clean build:parcel -plr watch:parcel watch:webext",
+    "sign": "web-ext sign --api-key $API_KEY --api-secret $API_SECRET -s ./dist"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
