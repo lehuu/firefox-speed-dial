@@ -1,10 +1,11 @@
 import * as React from "react";
-import { Dial, Group } from "../types";
+import { Dial, Group, StorageContent } from "../types";
 import { StorageType } from "../types/storageType";
+import useIsMounted from "./useIsMounted";
 import useStorageListener from "./useStorageListener";
 
 interface State {
-  data: { groups: Group[]; dials: Dial[] };
+  data: StorageContent;
   isLoading: boolean;
   error?: Error;
 }
@@ -15,7 +16,7 @@ interface LoadAction {
 
 interface DoneAction {
   type: "Done";
-  payload: { groups: Group[]; dials: Dial[] };
+  payload: StorageContent;
 }
 
 interface ErrorAction {
@@ -33,7 +34,7 @@ const reducer = (state: State, action: Action): State => {
       return { data: action.payload, isLoading: false };
     case "Error":
       return {
-        data: { groups: [], dials: [] },
+        data: {},
         isLoading: false,
         error: action.payload,
       };
@@ -42,21 +43,26 @@ const reducer = (state: State, action: Action): State => {
 
 const useSyncStorage = () => {
   const [state, dispatch] = React.useReducer(reducer, {
-    data: { groups: [], dials: [] },
+    data: {},
     isLoading: true,
   });
+
+  const isMounted = useIsMounted();
 
   const refetch = () => {
     dispatch({ type: "Load" });
     const promise = browser.storage.sync.get();
     return promise
       .then((res) => {
+        if (!isMounted()) return;
         dispatch({
           type: "Done",
-          payload: res as { groups: Group[]; dials: Dial[] },
+          payload: res as StorageContent,
         });
       })
       .catch((err) => {
+        if (!isMounted()) return;
+
         dispatch({ type: "Error", payload: err as Error });
       });
   };

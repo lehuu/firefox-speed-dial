@@ -36,7 +36,7 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
   const [cachedDials, setCachedDials] = React.useState(dials);
   const {
     data: { size },
-  } = useSyncStorageSize();
+  } = useSyncStorageSize(`dials-${groupId}`);
 
   React.useEffect(() => {
     const dialsCopy = [...dials];
@@ -158,28 +158,37 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
                   },
                 }}
               >
-                <AddCircle
-                  fontSize="medium"
+                <Box
                   sx={{
                     position: "absolute",
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%,-50%)",
-                    fontSize: 60,
-                  }}
-                />
-                <Typography
-                  variant="h6"
-                  sx={{
-                    position: "absolute",
-                    bottom: "10%",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
                     width: "100%",
-                    textAlign: "center",
+                    gap: "8px",
                   }}
                 >
-                  {Math.ceil((size / MAXIMUM_STORAGE_ITEM_SIZE) * 100)}% space
-                  used
-                </Typography>
+                  <AddCircle
+                    fontSize="medium"
+                    sx={{
+                      fontSize: 60,
+                    }}
+                  />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      width: "100%",
+                      textAlign: "center",
+                    }}
+                  >
+                    {Math.ceil((size / MAXIMUM_STORAGE_ITEM_SIZE) * 100)}% space
+                    used
+                  </Typography>
+                </Box>
               </Box>
             </Grid>
           </SortableCardContainer>

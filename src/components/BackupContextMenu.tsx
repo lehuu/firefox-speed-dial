@@ -13,6 +13,7 @@ import useSyncStorageSize from "../hooks/useSyncStorageSize";
 import { isStorageContentSchema, MAXIMUM_STORAGE_TOTAL_SIZE } from "../types";
 import createAll from "../mutations/createAll";
 import { useSnackbar } from "notistack";
+import updateSyncStorage from "../utils/updateSyncStorage";
 
 interface BackupContextMenuProps {}
 
@@ -55,7 +56,8 @@ const BackupContextMenu: React.FunctionComponent<BackupContextMenuProps> =
 
           const resultParsed = JSON.parse(result);
           if (isStorageContentSchema(resultParsed)) {
-            const result = await createAll(resultParsed);
+            const updatedSyncStorage = updateSyncStorage(resultParsed);
+            const result = await createAll(updatedSyncStorage ?? resultParsed);
             if (result.error) {
               enqueueSnackbar("Error writing file", {
                 variant: "error",

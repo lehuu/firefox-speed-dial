@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Dial } from "../types";
 import { StorageType } from "../types/storageType";
+import useIsMounted from "./useIsMounted";
 import useStorageListener from "./useStorageListener";
 
 interface State {
@@ -36,24 +37,23 @@ const reducer = (state: State, action: Action): State => {
   }
 };
 
-const useDials = (groupId?: string) => {
+const useDials = (groupId: string) => {
   const [state, dispatch] = React.useReducer(reducer, {
     dials: [],
     isLoading: true,
   });
+  const isMounted = useIsMounted();
 
   const refetch = React.useCallback(() => {
     dispatch({ type: "Load" });
-    const promise = browser.storage.sync.get({ dials: [] });
+    const promise = browser.storage.sync.get({ [`dials-${groupId}`]: [] });
     return promise
       .then((res) => {
-        const filtered = groupId
-          ? (res.dials as Dial[]).filter((dial) => dial.group === groupId)
-          : (res.dials as Dial[]);
-
-        dispatch({ type: "Done", payload: filtered });
+        if (!isMounted()) return;
+        dispatch({ type: "Done", payload: res[`dials-${groupId}`] as Dial[] });
       })
       .catch((err) => {
+        if (!isMounted()) return;
         dispatch({ type: "Error", payload: err as Error });
       });
   }, [groupId]);
@@ -65,12 +65,9 @@ const useDials = (groupId?: string) => {
   useStorageListener(
     StorageType.SYNC,
     (changed) => {
-      if ("dials" in changed) {
-        const newValue = changed.dials.newValue;
-        const filtered = groupId
-          ? (newValue as Dial[]).filter((dial) => dial.group === groupId)
-          : (newValue as Dial[]);
-        dispatch({ type: "Done", payload: filtered });
+      if (`dials-${groupId}` in changed) {
+        const newValue = changed[`dials-${groupId}`].newValue;
+        dispatch({ type: "Done", payload: (newValue as Dial[]) ?? [] });
       }
     },
     [groupId]

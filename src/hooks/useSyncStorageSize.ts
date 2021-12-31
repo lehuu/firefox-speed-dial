@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Dial, Group } from "../types";
 import { StorageType } from "../types/storageType";
+import useIsMounted from "./useIsMounted";
 import useStorageListener from "./useStorageListener";
 
 interface State {
@@ -45,18 +46,21 @@ const useSyncStorageSize = (key?: string) => {
     data: { size: 0 },
     isLoading: true,
   });
+  const isMounted = useIsMounted();
 
   const refetch = () => {
     dispatch({ type: "Load" });
     const promise = browser.storage.sync.getBytesInUse(key);
     return promise
       .then((res) => {
+        if (!isMounted()) return;
         dispatch({
           type: "Done",
           payload: { size: res },
         });
       })
       .catch((err) => {
+        if (!isMounted()) return;
         dispatch({ type: "Error", payload: err as Error });
       });
   };

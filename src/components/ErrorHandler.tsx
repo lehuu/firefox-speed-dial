@@ -2,20 +2,12 @@ import { Box, Button, Link } from "@mui/material";
 import { useSnackbar } from "notistack";
 import * as React from "react";
 import useSyncStorage from "../hooks/useSyncStorage";
-import createAll from "../mutations/createAll";
 
 const ErrorHandler: React.FunctionComponent = () => {
   const { data } = useSyncStorage();
-  const { enqueueSnackbar } = useSnackbar();
 
   const handleDialRemoval = async () => {
-    const result = await createAll({ groups: [], dials: [] });
-    if (result.error) {
-      enqueueSnackbar(`${result.error.name} Error writing file`, {
-        variant: "error",
-      });
-      return;
-    }
+    await browser.storage.sync.clear();
     window.location.reload();
   };
 
