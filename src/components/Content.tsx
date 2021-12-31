@@ -2,14 +2,14 @@ import * as React from "react";
 import useGroups from "../hooks/useGroups";
 import GroupPopUp from "./GroupPopup";
 import { AppBar, IconButton } from "@mui/material";
-import { AddCircle } from "@mui/icons-material";
+import { AddCircle, MoreVert } from "@mui/icons-material";
 import useContextMenu from "../hooks/useContextMenu";
 import EditContextMenu from "./EditContextMenu";
 import NewContextMenu from "./NewContextMenu";
 import ConfirmPopup from "./ConfirmPopup";
 import { useSnackbar } from "notistack";
 import { SortableTabbar, SortableTab } from "./SortableTabBar";
-import { arrayMove } from "react-sortable-hoc";
+import { arrayMoveImmutable as arrayMove } from "array-move";
 import deleteGroup from "../mutations/deleteGroup";
 import updateGroupPositions from "../mutations/updateGroupPositions";
 import { Group } from "../types";
@@ -18,6 +18,7 @@ import { Loader } from "./Loader";
 import useDefaultTab from "../hooks/useDefaultTab";
 import saveDefaultTab from "../mutations/saveDefaultTab";
 import { Box } from "@mui/system";
+import BackupContextMenu from "./BackupContextMenu";
 
 enum ContentModalType {
   None = 0,
@@ -26,7 +27,7 @@ enum ContentModalType {
 }
 
 const Content: React.FunctionComponent = () => {
-  const { groups, isLoading, error, refetch } = useGroups();
+  const { groups, isLoading, error } = useGroups();
   const { defaultTab, isLoading: defaultTabIsLoading } = useDefaultTab();
   const [modalState, setModalState] = React.useState<{
     modalType: ContentModalType;
@@ -41,9 +42,10 @@ const Content: React.FunctionComponent = () => {
     setSelectedTab(defaultTab);
   }, [defaultTab]);
 
-  React.useMemo(() => {
-    groups.sort((a, b) => a.position - b.position);
-    setCachedGroups(groups);
+  React.useEffect(() => {
+    const groupsCopy = [...groups];
+    groupsCopy.sort((a, b) => a.position - b.position);
+    setCachedGroups(groupsCopy);
   }, [groups]);
 
   const clampedSelectedTab = React.useMemo(() => {
@@ -68,6 +70,18 @@ const Content: React.FunctionComponent = () => {
     setModalState((prev) => ({ ...prev, modalType: ContentModalType.None }));
   };
 
+  const handleSettingsClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const elementRect = event.currentTarget.getBoundingClientRect();
+
+    const x = elementRect.x + elementRect.width;
+    const y = elementRect.y + elementRect.height;
+
+    show({ x, y }, <BackupContextMenu />);
+  };
+
   const handleDelete = (group: Group) => {
     setModalState({
       selectedGroup: group,
@@ -84,7 +98,6 @@ const Content: React.FunctionComponent = () => {
       return;
     }
     enqueueSnackbar("Group deleted", { variant: "success" });
-    refetch();
     handleCloseModal();
   };
 
@@ -114,16 +127,16 @@ const Content: React.FunctionComponent = () => {
     oldIndex: number;
     newIndex: number;
   }) => {
-    const sortedGroups = arrayMove<Group>(cachedGroups, oldIndex, newIndex).map(
-      (el, i) => ({ ...el, position: i })
-    );
-    setCachedGroups(sortedGroups);
+    setCachedGroups((prev) => {
+      const sortedGroups = arrayMove<Group>(prev, oldIndex, newIndex).map(
+        (el, i) => ({ ...el, position: i })
+      );
+      updateGroupPositions(sortedGroups).catch(() => {
+        enqueueSnackbar("Error", { variant: "error" });
+      });
 
-    const result = await updateGroupPositions(sortedGroups);
-    if (result.error) {
-      enqueueSnackbar("Error", { variant: "error" });
-      return;
-    }
+      return sortedGroups;
+    });
   };
 
   if (defaultTabIsLoading) {
@@ -167,11 +180,22 @@ const Content: React.FunctionComponent = () => {
           sx={{
             float: "right",
             margin: "auto",
-            paddingRight: "16px",
+            paddingRight: "8px",
+            display: "flex",
           }}
         >
           <IconButton onClick={() => handleShowEditModal()} color="primary">
             <AddCircle fontSize="medium" />
+          </IconButton>
+          <IconButton
+            sx={{
+              padding: 0,
+            }}
+            disableRipple
+            onClick={(e) => handleSettingsClick(e)}
+            color="secondary"
+          >
+            <MoreVert fontSize="medium" />
           </IconButton>
         </Box>
       </AppBar>
@@ -183,7 +207,10 @@ const Content: React.FunctionComponent = () => {
         <ConfirmPopup
           onDeny={handleCloseModal}
           onClose={handleCloseModal}
-          onConfirm={() => handleDeleteConfirm(modalState.selectedGroup)}
+          onConfirm={() =>
+            modalState.selectedGroup &&
+            handleDeleteConfirm(modalState.selectedGroup)
+          }
           open
           heading={"Warning"}
           body={`Are you sure you want to delete ${modalState.selectedGroup?.title}?`}
@@ -191,7 +218,6 @@ const Content: React.FunctionComponent = () => {
       )}
       {modalState.modalType === ContentModalType.Edit && (
         <GroupPopUp
-          onSave={refetch}
           heading={modalState.selectedGroup ? "Edit group" : "Create new group"}
           group={modalState.selectedGroup}
           open

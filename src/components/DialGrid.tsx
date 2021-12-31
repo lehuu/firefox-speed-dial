@@ -1,6 +1,6 @@
 import * as React from "react";
 import useDials from "../hooks/useDials";
-import { Dial } from "../types";
+import { Dial, MAXIMUM_STORAGE_ITEM_SIZE } from "../types";
 import useContextMenu from "../hooks/useContextMenu";
 import { useSnackbar } from "notistack";
 import ConfirmPopup from "./ConfirmPopup";
@@ -9,11 +9,13 @@ import EditContextMenu from "./EditContextMenu";
 import NewContextMenu from "./NewContextMenu";
 import { AddCircle } from "@mui/icons-material";
 import deleteDial from "../mutations/deleteDial";
-import { Grid, Container, Box, Fade } from "@mui/material";
+import { Grid, Container, Box, Fade, Typography } from "@mui/material";
 import { SortableCard, SortableCardContainer } from "./DialCard";
-import { arrayMove, SortEndHandler } from "react-sortable-hoc";
+import { SortEndHandler } from "react-sortable-hoc";
+import { arrayMoveImmutable as arrayMove } from "array-move";
 import updateDialPositions from "../mutations/updateDialPositions";
 import { Loader } from "./Loader";
+import useSyncStorageSize from "../hooks/useSyncStorageSize";
 
 enum ContentModalType {
   None = 0,
@@ -26,16 +28,20 @@ interface DialProps {
 }
 
 const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
-  const { dials, isLoading, error, refetch } = useDials(groupId);
+  const { dials, isLoading, error } = useDials(groupId);
   const [modalState, setModalState] = React.useState<{
     modalType: ContentModalType;
     selectedDial?: Dial;
   }>({ modalType: ContentModalType.None });
   const [cachedDials, setCachedDials] = React.useState(dials);
+  const {
+    data: { size },
+  } = useSyncStorageSize(`dials-${groupId}`);
 
-  React.useMemo(() => {
-    dials.sort((a, b) => a.position - b.position);
-    setCachedDials(dials);
+  React.useEffect(() => {
+    const dialsCopy = [...dials];
+    dialsCopy.sort((a, b) => a.position - b.position);
+    setCachedDials(dialsCopy);
   }, [dials]);
 
   const { show, hide } = useContextMenu();
@@ -69,7 +75,6 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
       return;
     }
     enqueueSnackbar("Dial deleted", { variant: "success" });
-    refetch();
     handleCloseModal();
   };
 
@@ -93,16 +98,16 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
   };
 
   const handleSortEnd: SortEndHandler = async ({ oldIndex, newIndex }) => {
-    const sortedDials = arrayMove<Dial>(cachedDials, oldIndex, newIndex).map(
-      (el, i) => ({ ...el, position: i })
-    );
-    setCachedDials(sortedDials);
+    setCachedDials((prev) => {
+      const sortedDials = arrayMove<Dial>(prev, oldIndex, newIndex).map(
+        (el, i) => ({ ...el, position: i })
+      );
+      updateDialPositions(sortedDials).catch(() => {
+        enqueueSnackbar("Error", { variant: "error" });
+      });
 
-    const result = await updateDialPositions(sortedDials);
-    if (result.error) {
-      enqueueSnackbar("Error", { variant: "error" });
-      return;
-    }
+      return sortedDials;
+    });
   };
 
   return (
@@ -117,7 +122,7 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
       onContextMenu={handleRightClick}
     >
       <Fade in={!isLoading}>
-        <Container>
+        <Container sx={{ marginBottom: "16px" }}>
           <SortableCardContainer
             axis="xy"
             distance={10}
@@ -153,31 +158,55 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
                   },
                 }}
               >
-                <AddCircle
-                  fontSize="medium"
+                <Box
                   sx={{
                     position: "absolute",
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%,-50%)",
-                    fontSize: 60,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    gap: "8px",
                   }}
-                />
+                >
+                  <AddCircle
+                    fontSize="medium"
+                    sx={{
+                      fontSize: 60,
+                    }}
+                  />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      width: "100%",
+                      textAlign: "center",
+                    }}
+                  >
+                    {Math.ceil((size / MAXIMUM_STORAGE_ITEM_SIZE) * 100)}% space
+                    used
+                  </Typography>
+                </Box>
               </Box>
             </Grid>
           </SortableCardContainer>
         </Container>
       </Fade>
 
-      <Loader open={isLoading} />
+      <Loader open={isLoading && dials.length === 0} />
       <Box />
 
       {modalState.modalType === ContentModalType.Delete && (
         <ConfirmPopup
           onDeny={handleCloseModal}
           onClose={handleCloseModal}
-          onConfirm={() => handleDeleteConfirm(modalState.selectedDial)}
-          open={modalState.modalType === ContentModalType.Delete}
+          onConfirm={() =>
+            modalState.selectedDial &&
+            handleDeleteConfirm(modalState.selectedDial)
+          }
+          open
           heading={"Warning"}
           body={`Are you sure you want to delete ${modalState.selectedDial?.alias}?`}
         />
@@ -185,7 +214,6 @@ const Dials: React.FunctionComponent<DialProps> = ({ groupId }) => {
 
       {modalState.modalType === ContentModalType.Edit && (
         <DialPopUp
-          onSave={refetch}
           heading={modalState.selectedDial ? "Edit dial" : "Create new dial"}
           groupId={groupId}
           dial={modalState.selectedDial}

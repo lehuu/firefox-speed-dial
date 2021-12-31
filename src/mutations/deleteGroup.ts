@@ -1,32 +1,26 @@
-import { Group, QueryResult, Dial } from "../types";
+import { Group, QueryResult, Dial, SCHEMA_VERSION } from "../types";
 
-const deleteGroup = (group: Group): Promise<QueryResult> => {
-  const promise = browser.storage.sync.get({ dials: [] });
+const deleteGroup = (group: Group): Promise<QueryResult<Group[]>> => {
+  const promise = browser.storage.sync.remove(`dials-${group.id}`);
   return promise
-    .then(res => {
-      const filteredDials = (res.dials as Dial[]).filter(
-        dial => dial.group !== group.id
-      );
-      return browser.storage.sync.set({ dials: filteredDials });
-    })
     .then(() => browser.storage.sync.get({ groups: [] }))
-    .then(res => {
+    .then((res) => {
       const groups = res.groups as Group[];
-      const filteredGroup = groups.filter(el => el.id != group.id);
+      const filteredGroup = groups.filter((el) => el.id != group.id);
       filteredGroup.sort((a, b) => a.position - b.position);
       const result = filteredGroup.map((el, index) => ({
         ...el,
-        position: index
+        position: index,
       }));
       return Promise.all([
-        browser.storage.sync.set({ groups: result }),
-        result
+        browser.storage.sync.set({ groups: result, version: SCHEMA_VERSION }),
+        result,
       ]);
     })
     .then(([, res]) => {
       return { data: res, error: null };
     })
-    .catch(err => {
+    .catch((err) => {
       return { data: null, error: err };
     });
 };

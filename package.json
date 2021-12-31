@@ -4,6 +4,10 @@
     "name": "Phuoc Le"
   },
   "verion": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lehuu/firefox-speed-dial/tree/master"
+  },
   "description": "An extension to get the Opera Speed Dial to Firefox",
   "keywords": [
     "firefox",
@@ -17,6 +21,9 @@
     "@mui/icons-material": "^5.1.0",
     "@mui/material": "^5.1.0",
     "@mui/system": "^5.1.0",
+    "array-move": "^4.0.0",
+    "fp-ts": "^2.11.5",
+    "io-ts": "^2.2.16",
     "notistack": "^2.0.3",
     "psl": "^1.8.0",
     "react": "^17.0.2",
@@ -24,17 +31,17 @@
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.22.2",
     "react-sortable-hoc": "^2.0.0",
-    "react-use": "^13.26.2",
+    "react-use": "^17.3.2",
     "typeface-roboto": "0.0.75",
     "uuid": "^3.4.0"
   },
   "scripts": {
     "clean": "rimraf dist",
     "build:parcel": "parcel build src/manifest.json --no-cache --no-autoinstall",
-    "build:webext": "web-ext build",
+    "build:webext": "web-ext build -s src --overwrite-dest",
     "watch:parcel": "parcel watch src/manifest.json --no-autoinstall --no-hmr",
     "watch:webext": "web-ext run --source-dir ./dist/",
-    "build": "run-s clean build:parcel build:webext",
+    "build": "tsc && run-s clean build:parcel build:webext",
     "develop": "npm-run-all clean build:parcel -plr watch:parcel watch:webext"
   },
   "devDependencies": {
@@ -43,7 +50,8 @@
     "@parcel/config-default": "^2.0.1",
     "@parcel/config-webextension": "^2.0.1",
     "@parcel/transformer-typescript-tsc": "^2.0.1",
-    "@types/firefox-webext-browser": "^70.0.1",
+    "@types/download": "^8.0.1",
+    "@types/firefox-webext-browser": "^94.0.0",
     "@types/psl": "^1.1.0",
     "@types/react": "^17.0.37",
     "@types/react-color": "^3.0.1",
@@ -51,12 +59,15 @@
     "@types/uuid": "^3.4.7",
     "babel-plugin-emotion": "^11.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
+    "body-parser": "^1.19.0",
+    "download": "^8.0.0",
+    "express": "^4.17.1",
     "npm-run-all": "^4.1.5",
     "parcel": "^2.0.0",
-    "parcel-plugin-web-extension": "^1.6.1",
     "rimraf": "^3.0.0",
+    "safe-compare": "^1.1.4",
     "typescript": "^4.5.4",
-    "web-ext": "^4.3.0"
+    "web-ext": "^6.6.0"
   },
   "browserslist": [
     "last 2 Firefox versions"

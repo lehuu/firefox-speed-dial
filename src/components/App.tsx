@@ -5,6 +5,7 @@ import { ContextMenuProvider } from "./ContextMenuProvider";
 import Content from "./Content";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
+import ErrorBoundary from "./ErrorBoundary";
 
 const App: React.FunctionComponent = () => {
   return (
@@ -12,7 +13,9 @@ const App: React.FunctionComponent = () => {
       <CssBaseline />
       <SnackbarProvider maxSnack={4}>
         <ContextMenuProvider>
-          <Content />
+          <ErrorBoundary>
+            <Content />
+          </ErrorBoundary>
         </ContextMenuProvider>
       </SnackbarProvider>
     </ThemeProvider>

@@ -25,7 +25,7 @@ type FormData = {
 interface DialPopUpProps extends Omit<PopUpProps, "children"> {
   dial?: Dial;
   groupId: string;
-  onSave: () => void;
+  onSave?: () => void;
 }
 
 const DialPopUp: React.FunctionComponent<DialPopUpProps> = ({
@@ -55,11 +55,12 @@ const DialPopUp: React.FunctionComponent<DialPopUpProps> = ({
       enqueueSnackbar(`Error deleting dial: ${result.error.name}`, {
         variant: "error",
       });
+      console.error(result.error);
       return;
     }
     enqueueSnackbar("Dial deleted", { variant: "success" });
     onClose();
-    onSave();
+    onSave && onSave();
   };
 
   const handleBlurLink = () => {
@@ -85,10 +86,11 @@ const DialPopUp: React.FunctionComponent<DialPopUpProps> = ({
       enqueueSnackbar(`Error saving dial: ${result.error.name}`, {
         variant: "error",
       });
+      console.error(result.error);
     } else {
       enqueueSnackbar("Dial saved", { variant: "success" });
       onClose();
-      onSave();
+      onSave && onSave();
     }
   };
 

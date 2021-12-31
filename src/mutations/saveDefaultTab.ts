@@ -1,6 +1,6 @@
-import { QueryResult } from "../types";
+import { Group, QueryResult } from "../types";
 
-const saveDefaultTab = (defaultTab: number): Promise<QueryResult> => {
+const saveDefaultTab = (defaultTab: number): Promise<QueryResult<number>> => {
   const promise = browser.storage.local.set({ defaultTab });
   return promise
     .then(() => ({ data: defaultTab }))
